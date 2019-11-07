@@ -12,16 +12,12 @@ source("script1.R")
 source("writedata.R")
 # source("prognozy.R")
 
-selfarima <- function(data, oo = NULL, nr = 7, n = 7, log = FALSE, type = "simple", xr = NULL, mnk = FALSE, result.save = TRUE)
+selfarima <- function(data, start.date = "2010-01-01", end.date = "2012-12-31", nr = 7, n = 7, log = FALSE, type = "simple", xr = NULL, mnk = FALSE, result.save = TRUE)
 {
   ###################################################################################
-  max <- dim(data)[1]
-  if(is.null(oo))
-  {
-    oo <- max
-  }
-  
-  wind <- (max - (oo - 1)):max
+  start.date <- as.POSIXct(start.date, tz = "UTC")
+  end.date <- as.POSIXct(end.date, tz = "UTC")
+  wind <- which(data$data == start.date):which(data$data == end.date)
   
   startW <- as.numeric(strftime(head(data$data[wind], 1), format = "%W"))
   startD <- as.numeric(strftime(head(data$data[wind], 1) + 1, format =" %w")) 
@@ -54,7 +50,7 @@ selfarima <- function(data, oo = NULL, nr = 7, n = 7, log = FALSE, type = "simpl
   }
   else if (type == "xreg")
   {
-    model <- auto.arima(ts1, xreg=xr[wind, ], stepwise=FALSE, approximation = FALSE)
+    model <- auto.arima(ts1, xreg=xr[wind, ], seasonal = TRUE, stepwise=FALSE, approximation = FALSE)
     fcast <- forecast(model, xreg = xr[1:n, ])
   }
   ###################################################################################
@@ -72,7 +68,7 @@ selfarima <- function(data, oo = NULL, nr = 7, n = 7, log = FALSE, type = "simpl
   {
     fcast <- int + (beta * h.pred) + as.numeric(fcast$mean)
     
-    ddff <- data.frame(x = c(data[wind, nr], fcast), y = c(rep("a", oo), rep("b", length(h.pred))))
+    ddff <- data.frame(x = c(data[wind, nr], fcast), y = c(rep("a", length(wind)), rep("b", length(h.pred))))
     
     pp <- xyplot(x ~ 1:length(x), data = ddff, group = y, type = "b", col = c("black", "red"))
   }

@@ -1,21 +1,40 @@
 library(dplyr)
 library(stringr)
 library(data.table)
-# 
-# 
+# rozróznienie na dni normalne (7) i dni specjalne (5) na raz
+# dodać daty jako okno estymacji 
+
 # # attach(data2)
-# 
-# tib <- data2 %>%
-#   select(nrdnia, dni_specjalne, ends_with("_v"), ends_with("_k")) %>%
-#   group_by(nrdnia, dni_specjalne) %>%
-#   summarise_all(funs(sum(.))) 
+
+tib <- data2 %>%
+  select(nrdnia, ends_with("_v"), ends_with("_k")) %>%
+  group_by(nrdnia) %>%
+  summarise_all(funs(sum(.)))
+
+tib <- tib[, -c(1)]
+
+d <- dim(tib)[2]
+
+tib <- tib[,((d/2 + 1):d)]/tib[,(1:(d/2))]
+
+tib2 <- data2 %>%
+  select(dni_specjalne, ends_with("_v"), ends_with("_k")) %>%
+  group_by(dni_specjalne) %>%
+  summarise_all(funs(sum(.)))
+
+tib2 <- tib2[, -c(1)]
+
+d2 <- dim(tib2)[2]
+
+tib2 <- tib2[,((d2/2 + 1):d2)]/tib2[,(1:(d2/2))]
+plot(tib2[, 1], type = "l")
 # 
 # cnam <- tib[, c(1:2)]
-# tib <- tib[, -c(1:2)]
-# 
-# d <- dim(tib)[2]
-# 
-# tib <- tib[,((d/2 + 1):d)]/tib[,(1:(d/2))]
+tib <- tib[, -c(1)]
+
+d <- dim(tib)[2]
+
+tib <- tib[,((d/2 + 1):d)]/tib[,(1:(d/2))]
 # 
 # rr <- bind_cols(tib2, as_tibble(tib))
 # rr <- as.data.frame(rr)
@@ -94,7 +113,7 @@ foo <- function(data, oo = NULL, nr = 7, n = 7, log = FALSE, type = "simple", xr
   return(list(df, tib, model.list))
 }
 
-xxx <- foo(data2, oo = 50, nr = 7, n = 100)
+xxx <- foo(data2, oo = 365, nr = 7, n = 100)
 
 plot(xxx[[1]][, 4], type = "l")
 plot(data2[, 8], type = "l")
