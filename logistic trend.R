@@ -1,19 +1,23 @@
 library(car)
-logistic.trend <- function(data, nr = 7)
+logistic.trend <- function(data, nr = 7, wind = NULL)
 {
-  dat <- data[, nr]
-  coefs <- coef(lm(logit(dat/max(dat))~data$key))
+  if(is.null(wind)) wind <- data$key
   
-  model <- nls(dat~phi1/(1+exp(-(phi2+phi3*data2$key))), 
-              start=list(phi1 = max(dat), phi2 = (coefs[1]), phi3 = (coefs[2])), data = data, trace = TRUE, algorithm = "plinear")
+  dat <- as.numeric(data[wind, nr])
+  coefs <- coef(lm(logit(dat/max(dat)) ~ wind))
+  
+  model <- nlsLM(dat ~ phi1/(1+exp(-(phi2+phi3*wind))), 
+              start = list(phi1 = max(dat), phi2 = coefs[1], phi3 = coefs[2]), data = data, trace=TRUE)
   
   phi1 <- coef(model)[1]
   phi2 <- coef(model)[2]
   phi3 <- coef(model)[3]
-  trend <- phi1/(1 + exp(-(phi2 + phi3 * data2$key))) 
-  predict <- data.frame(x = data2$key, y = trend)
   
-  return(list(predict, dat))
+  trend <- phi1/(1 + exp(-(phi2 + phi3 * wind))) 
+  
+  res <- data.frame(x = wind, fit = trend)
+  
+  return(list(res, dat))
 }
 
 plot.logistic.trend <- function(logistic.list)
@@ -21,12 +25,12 @@ plot.logistic.trend <- function(logistic.list)
   dat <- logistic.list[[2]]
   predict <- logistic.list[[1]]
   
-  data %>%
-    ggplot(aes(x=predict[, 1],y=dat))+
-    geom_line(color='blue')+theme_bw()+
-    geom_line(data=predict,aes(x=x,y=y), size=2)
+  cbind(data.frame(data = dat), predict) %>%
+    ggplot(aes(x = x)) + 
+    geom_line(aes(y = data), color = 'blue') + 
+    geom_line(aes(y = fit), color = 'red', size = 2)
 }
 
 
-t <- logistic.trend(data2, 7)
+t <- logistic.trend(data2, 10)
 plot.logistic.trend(t)
