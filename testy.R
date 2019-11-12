@@ -1,4 +1,3 @@
-library(lmtest)
 
 cft <- function(li, data)
 {

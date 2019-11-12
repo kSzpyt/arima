@@ -69,3 +69,21 @@ data2 %>%
   ggplot(aes(x=data2$key,y=data2$`88209_v`))+
   geom_line(color='blue')+theme_bw()+
   geom_line(data=predict,aes(x=x,y=y), size=2)
+
+
+
+
+
+
+
+
+
+a <- selfarima(data2, nr = 7, n = 52, mnk = TRUE, result.save = FALSE, start.date = "2012-01-01", end.date = "2012-12-31")
+
+a[[5]]
+a[[4]]
+plot(a[[4]], type = "l")
+
+
+plot.logistic.trend(a[[6]])
+a[[6]]

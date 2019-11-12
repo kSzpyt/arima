@@ -1,5 +1,5 @@
 library(car)
-logistic.trend <- function(data, nr = 7, wind = NULL)
+logistic.trend <- function(data, nr = 7, wind = NULL, n = 7)
 {
   if(is.null(wind)) wind <- data$key
   
@@ -17,7 +17,10 @@ logistic.trend <- function(data, nr = 7, wind = NULL)
   
   res <- data.frame(x = wind, fit = trend)
   
-  return(list(res, dat))
+  len <- wind[length(wind)] + 1
+  pred.trend <- phi1/(1 + exp(-(phi2 + phi3 * (len:(len+n-1) ))))
+  
+  return(list(res, dat, pred.trend))
 }
 
 plot.logistic.trend <- function(logistic.list)
@@ -32,5 +35,28 @@ plot.logistic.trend <- function(logistic.list)
 }
 
 
-t <- logistic.trend(data2, 10)
-plot.logistic.trend(t)
+t <- logistic.trend(data2, nr = 7, n = 52)
+plot.logistic.trend(a[[6]])
+
+xd <- t[[3]] + a[[4]]
+
+start.date <- as.POSIXct(start.date, tz = "UTC")
+end.date <- as.POSIXct(end.date, tz = "UTC")
+wind <- which(data$data == start.date):which(data$data == end.date)
+ex <- which(!is.na(data[wind, nr]))
+wind <- wind[ex]
+
+startW <- as.numeric(strftime(head(data$data, 1), format = "%W"))
+startD <- as.numeric(strftime(head(data$data, 1) + 1, format =" %w")) 
+
+lt <- logistic.trend(data = data2, nr = 7, n = 52, wind = (731:1096))
+trend <- lt[[1]][, 2]
+res <- abs(data$`88209_v`[731:1096] - trend)
+ts1 <- ts(res, start = c(startW, startD), frequency = 7)
+
+fitt <- auto.arima(ts1, seasonal = TRUE, approximation = FALSE, stepwise = FALSE) 
+fc <- forecast(fitt, h = 52)
+
+fc$mean
+
+plot(fc$mean, type = "l")

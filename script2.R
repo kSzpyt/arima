@@ -1,6 +1,5 @@
 library(dygraphs)
 library(tseries)
-library(dplyr)
 library(TSA)
 
 plots <- function(data, n.start = 7, n.stop = dim(df)[2], log = FALSE)

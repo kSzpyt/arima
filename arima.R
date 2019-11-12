@@ -1,7 +1,4 @@
 library(forecast)
-library(ggplot2)
-library(lmtest)
-library(gridExtra)
 library(openxlsx)
 library(plyr)
 library(dplyr)
@@ -15,9 +12,11 @@ source("writedata.R")
 selfarima <- function(data, start.date = "2010-01-01", end.date = "2012-12-31", nr = 7, n = 7, log = FALSE, type = "simple", xr = NULL, mnk = FALSE, result.save = TRUE)
 {
   ###################################################################################
-  start.date <- as.POSIXct(start.date, tz = "UTC")
-  end.date <- as.POSIXct(end.date, tz = "UTC")
+  start.date <- as.POSIXct(start.date, tz = "UTC", format = c("%Y-%m-%d"))
+  end.date <- as.POSIXct(end.date, tz = "UTC", format = c("%Y-%m-%d"))
   wind <- which(data$data == start.date):which(data$data == end.date)
+  ex <- which(!is.na(data[wind, nr]))
+  wind <- wind[ex]
   
   startW <- as.numeric(strftime(head(data$data[wind], 1), format = "%W"))
   startD <- as.numeric(strftime(head(data$data[wind], 1) + 1, format =" %w")) 
@@ -30,13 +29,17 @@ selfarima <- function(data, start.date = "2010-01-01", end.date = "2012-12-31", 
   ###################################################################################
   if(mnk == TRUE)
   {
-    fit <- lm(data[wind, nr] ~ data$key[wind])
-    res <- fit$residuals
+    # fit <- lm(data[wind, nr] ~ data$key[wind])
+    # res <- fit$residuals
+    # ts1 <- ts(res, start = c(startW, startD), frequency = 7)
+    # 
+    # int <- fit$coefficients[1]
+    # beta <- fit$coefficients[2]
+    # h.pred <- (dim(data)[1] + 1):((dim(data)[1]  + n))
+    lt <- logistic.trend(data = data, nr = nr, wind = wind, n = n)
+    trend <- lt[[1]][, 2]
+    res <- dat - trend
     ts1 <- ts(res, start = c(startW, startD), frequency = 7)
-    
-    int <- fit$coefficients[1]
-    beta <- fit$coefficients[2]
-    h.pred <- (dim(data)[1] + 1):((dim(data)[1]  + n))
   }
   else
   {
@@ -66,9 +69,9 @@ selfarima <- function(data, start.date = "2010-01-01", end.date = "2012-12-31", 
   ###################################################################################
   if(mnk == TRUE)
   {
-    fcast <- int + (beta * h.pred) + as.numeric(fcast$mean)
+    fcast <- lt[[3]] + as.numeric(fcast$mean)
     
-    ddff <- data.frame(x = c(data[wind, nr], fcast), y = c(rep("a", length(wind)), rep("b", length(h.pred))))
+    ddff <- data.frame(x = c(data[wind, nr], fcast), y = c(rep("a", length(wind)), rep("b", length(fcast))))
     
     pp <- xyplot(x ~ 1:length(x), data = ddff, group = y, type = "b", col = c("black", "red"))
   }
@@ -96,7 +99,7 @@ selfarima <- function(data, start.date = "2010-01-01", end.date = "2012-12-31", 
   ###################################################################################  
   
   
-  li <- list(dat, model, nr, fcast, pp)
+  li <- list(dat, model, nr, fcast, pp, lt)
   
   if(result.save == TRUE)
   {
