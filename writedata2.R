@@ -61,11 +61,11 @@ df.xl.write2 <- function(foo.list, data, typ, i)
   else
   {
     wb <- loadWorkbook(file.path(getwd(), "files", paste0("fitted_", as.character(typ), ".xlsx")))
-    sheet.rf.real <- addWorksheet(wb, "real-fitted rest+trend")
-    sheet.rf.rest <- addWorksheet(wb, "real-fitted rest")
-    sheet.error <- addWorksheet(wb, "errors")
-    sheet.coef <- addWorksheet(wb, "coefs")
-    sheet.infcrit <- addWorksheet(wb, "infcrit")
+    sheet.rf.real <- "real-fitted rest+trend"
+    sheet.rf.rest <- "real-fitted rest"
+    sheet.error <- "errors"
+    sheet.coef <- "coefs"
+    sheet.infcrit <-"infcrit"
   }
   #####################################################################################
   writeData(wb = wb, sheet = sheet.rf.real, df.whole, rowNames = FALSE, startCol = i*2)
@@ -81,7 +81,7 @@ df.xl.write2 <- function(foo.list, data, typ, i)
   {
     wb <- createWorkbook()
     sheet.rf.real <- addWorksheet(wb, "real-fitted rest+trend")
-    sheet.rf.rest <- addWorksheet(wb, "real-fitted rest")
+    # sheet.rf.rest <- addWorksheet(wb, "real-fitted rest")
     sheet.error <- addWorksheet(wb, "errors")
     sheet.coef <- addWorksheet(wb, "coefs")
     sheet.infcrit <- addWorksheet(wb, "infcrit")
@@ -96,11 +96,11 @@ df.xl.write2 <- function(foo.list, data, typ, i)
   else
   {
     wb <- loadWorkbook(file.path(getwd(), "files", paste0("predicted_", as.character(typ), ".xlsx"))) 
-    sheet.rf.real <- addWorksheet(wb, "real-fitted rest+trend")
-    sheet.rf.rest <- addWorksheet(wb, "real-fitted rest")
-    sheet.error <- addWorksheet(wb, "errors")
-    sheet.coef <- addWorksheet(wb, "coefs")
-    sheet.infcrit <- addWorksheet(wb, "infcrit")
+    sheet.rf.real <- "real-fitted rest+trend"
+    # sheet.rf.rest <- "real-fitted rest"
+    sheet.error <- "errors"
+    sheet.coef <- "coefs"
+    sheet.infcrit <-"infcrit"
   }
   
   #####################################################################################

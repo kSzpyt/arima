@@ -70,13 +70,16 @@ dummies <- function(data)
   aaa[which(data2$key %in% d.norm), 9:13] <- 0
   aaa[which(data2$key %in% d.spec), 9:13] <- ds[which(data2$key %in% d.spec), ]
   aaa[which(data2$key %in% d.spec), 2:8] <- 0
-  colnames(aaa) <- c("pon", "wt", "sr", "czw", "pt", "sb", "nd", "ds1", "ds2", "ds3", "ds4", "ds5")
+  aaa <- aaa[, -c(1:2)]
+  colnames(aaa) <- c("wt", "sr", "czw", "pt", "sb", "nd", "ds1", "ds2", "ds3", "ds4", "ds5")
   
   return(aaa)
 }
 
-
+ddd <- dummies(data2)
 #robimy dummy variable takie że są 0-1 dla dni normalnych oraz cbind z dniami specjlanymi (1-5)
 #pon wt sr czw pt sb nd ds1 ds2 ds3 ds4 ds5
 
-
+d <- as.factor(data2$dni_specjalne)
+d <- dummy_cols(d)
+d <- d[, -c(1:2)]

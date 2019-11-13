@@ -9,7 +9,7 @@ source("script1.R")
 source("writedata.R")
 
 selfarima2 <- function(data, start.date = "2010-01-01", end.date = "2012-12-31", nr = 7, n = 7, log = FALSE,
-                      type = "simple", xr = NULL, result.save = TRUE, typ = "AAA", i)
+                      type = "simple", xr = NULL, result.save = TRUE, typ = "AAA", i, seas = TRUE)
 {
   ###################################################################################
   start.date <- as.POSIXct(start.date, tz = "UTC", format = c("%Y-%m-%d"))
@@ -34,12 +34,12 @@ selfarima2 <- function(data, start.date = "2010-01-01", end.date = "2012-12-31",
   ###################################################################################
   if(type == "simple")
   {
-    model <- auto.arima(ts1, seasonal = TRUE, approximation = FALSE, stepwise = FALSE) 
+    model <- auto.arima(ts1, seasonal = seas, approximation = FALSE, stepwise = FALSE) 
     fcast.res <- forecast(model, h = n)
   }
   else if (type == "xreg")
   {
-    model <- auto.arima(ts1, xreg=xr[wind, ], seasonal = TRUE, stepwise=FALSE, approximation = FALSE)
+    model <- auto.arima(ts1, xreg=xr[wind, ], seasonal = seas, stepwise=FALSE, approximation = FALSE)
     fcast.res <- forecast(model, xreg = xr[1:n, ])
   }
   ###################################################################################
