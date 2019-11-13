@@ -87,3 +87,47 @@ plot(a[[4]], type = "l")
 
 plot.logistic.trend(a[[6]])
 a[[6]]
+
+
+
+
+
+a$pp
+
+infcrit <- t(data.frame(a$model$aic, a$model$aicc, a$model$bic))
+
+errors.res.fitted <- t(as.data.frame(err(a$model$fitted, a$res)))
+
+errors.predicted <- t(as.data.frame(err(a$dat, a$fcast)))
+
+ct <- cft(a$model, data2)
+
+a$model$coef <- a$model$coef[complete.cases(ct)]
+ct <- ct[complete.cases(ct), ]
+
+coef.pval <- data.frame(a$model$coef, ct[, 2])
+colnames(coef.pval) <- c(paste0("coefs_", "nam"), paste0("p.val_)", "nam"))
+
+df.rest <- data.frame(rep(0, 10), rep(0, 10))
+df.rest[5:10, 1] <- 9
+df2 <- data.frame(4:6)
+df.rest[8:10, 2] <- df2
+df.rest[]
+df.rest <- data.frame(as.numeric(a$res), as.numeric(a$model$fitted))
+colnames(df.real) <- c(paste0("real_", nam), paste0("fitted_", nam))
+
+
+df.rest.pred <- data.frame(rep(0, dim(data2)[1]), rep(0, dim(data2)[1]))
+df.rest.pred[a$wind, ] <- data.frame(as.numeric(a$res), as.numeric(a$model$fitted))
+df.rest.pred[foo.list$pred.wind, ] <- data.frame(as.numeric(foo.list$res), as.numeric(foo.list$model$fitted))
+colnames(df.real) <- c(paste0("real_", nam), paste0("fitted_", nam))
+
+df.whole <- data.frame(as.numeric(a$dat), as.numeric(a$model$fitted+a$trend))
+colnames(df.rest) <- c(paste0("real_", nam), paste0("fitted_", nam))#tu dopisać nazwę zmiennej
+
+a <- selfarima2(data2, start.date = "2011-01-01", end.date = "2012-01-01", nr = 7, result.save = FALSE, i = 1)
+b <- selfarima2(data2, start.date = "2011-01-01", end.date = "2012-01-01", nr = 8, result.save = FALSE, i = 1)
+a$pp
+
+df.xl.write2(a, data2, typ = "test", i = 1)
+df.xl.write2(b, data2, typ = "test", i = 2)

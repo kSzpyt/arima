@@ -9,7 +9,8 @@ source("script1.R")
 source("writedata.R")
 # source("prognozy.R")
 
-selfarima <- function(data, start.date = "2010-01-01", end.date = "2012-12-31", nr = 7, n = 7, log = FALSE, type = "simple", xr = NULL, mnk = FALSE, result.save = TRUE)
+selfarima <- function(data, start.date = "2010-01-01", end.date = "2012-12-31", nr = 7, n = 7, log = FALSE,
+                      type = "simple", xr = NULL, mnk = FALSE, result.save = TRUE, save.type = "AAA")
 {
   ###################################################################################
   start.date <- as.POSIXct(start.date, tz = "UTC", format = c("%Y-%m-%d"))
@@ -49,12 +50,12 @@ selfarima <- function(data, start.date = "2010-01-01", end.date = "2012-12-31", 
   if(type == "simple")
   {
     model <- auto.arima(ts1, seasonal = TRUE, approximation = FALSE, stepwise = FALSE) 
-    fcast <- forecast(model, h = n)
+    fcast.res <- forecast(model, h = n)
   }
   else if (type == "xreg")
   {
     model <- auto.arima(ts1, xreg=xr[wind, ], seasonal = TRUE, stepwise=FALSE, approximation = FALSE)
-    fcast <- forecast(model, xreg = xr[1:n, ])
+    fcast.res <- forecast(model, xreg = xr[1:n, ])
   }
   ###################################################################################
   if(log ==TRUE)
@@ -69,7 +70,7 @@ selfarima <- function(data, start.date = "2010-01-01", end.date = "2012-12-31", 
   ###################################################################################
   if(mnk == TRUE)
   {
-    fcast <- lt[[3]] + as.numeric(fcast$mean)
+    fcast <- lt[[3]] + as.numeric(fcast.res$mean)
     
     ddff <- data.frame(x = c(data[wind, nr], fcast), y = c(rep("a", length(wind)), rep("b", length(fcast))))
     
@@ -99,25 +100,28 @@ selfarima <- function(data, start.date = "2010-01-01", end.date = "2012-12-31", 
   ###################################################################################  
   
   
-  li <- list(dat, model, nr, fcast, pp, lt)
+  li <- list(dat, model, nr, fcast, pp, lt, res, fcast.res)
   
   if(result.save == TRUE)
   {
-    tt <- as.character(type)
+    # tt <- as.character(type)
+    # 
+    # if(log == TRUE)
+    # {
+    #   tt <- paste0(tt, "_log")
+    # }
+    # if(mnk == TRUE)
+    # {
+    #   tt <- paste0(tt, "_mnk")
+    #   df.xl.write(li, data, tt, mnk = TRUE)
+    # }
+    # else
+    # {
+    #   df.xl.write(li, data, tt, mnk = FALSE)
+    # }
     
-    if(log == TRUE)
-    {
-      tt <- paste0(tt, "_log")
-    }
-    if(mnk == TRUE)
-    {
-      tt <- paste0(tt, "_mnk")
-      df.xl.write(li, data, tt, mnk = TRUE)
-    }
-    else
-    {
-      df.xl.write(li, data, tt, mnk = FALSE)
-    }
+      df.xl.write(li, data, save.type, mnk = TRUE)
+    
   }
   else
   {

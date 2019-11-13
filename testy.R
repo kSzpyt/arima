@@ -1,8 +1,6 @@
 
-cft <- function(li, data)
+cft <- function(model, data)
 {
-  model <- li[[2]]
-  name <- names(data)[li[[3]]]
   ct <- coeftest(model)
   # if(dim(ct)[1] > 1)
   # {
@@ -14,7 +12,6 @@ cft <- function(li, data)
   #   rownames(ct.df) <- "Intercept"
   # }
   df <- data.frame("coefs" = rownames(ct.df), "p.value" = ct.df$`Pr(>|z|)`)
-  colnames(df)[1] <- as.character(name)
   return(df)
 }
 

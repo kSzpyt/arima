@@ -1,15 +1,8 @@
-err <- function(li, custom = FALSE)
+err <- function(raw, fit)
 {
-  if(custom == FALSE)
-  {
-    x.raw <- as.numeric(li[[1]])
-    x.fit <- as.numeric(li[[2]]$fitted)
-  }
-  else
-  {
-    x.raw <- as.numeric(li[[1]])
-    x.fit <- as.numeric(li[[2]])
-  }
+  x.raw <- raw
+  x.fit <- fit
+
   
   ME <- mean(x.raw - x.fit)
   
@@ -27,7 +20,7 @@ err <- function(li, custom = FALSE)
   
   SMAPE <- mean(abs((x.raw - x.fit)*100/((x.raw + x.fit)/2)))
   
-  return(list(ME = ME, MAE = MAE, MSE = MSE, SDE = SDE, PE = PE, MPE = MPE, MAPE = MAPE, SMAPE = SMAPE))
+  return(list(ME = ME, MAE = MAE, MSE = MSE, SDE = SDE, MPE = MPE, MAPE = MAPE, SMAPE = SMAPE))
 }
 
 

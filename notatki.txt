@@ -1,13 +1,13 @@
-1. wyliczyc trend logistyczny i reszty na podstawie trendu log
+DONE 1. wyliczyc trend logistyczny i reszty na podstawie trendu log
 2. zapisać wartości reczywiste reszt + modelowane (excel)
 3. zapisać jak wyżej z uwzględnieniem trendu logistycznego
 4. zmodyfikować funkcję, żeby zwracała pkt 2 oraz 3
-5. zmodyfikować zapis do excela, żeby powtały 4 sheet'y
+5. zmodyfikować zapis do excela, żeby powstały 4 sheet'y
 	a) pkt2
 	b) pkt3
 	c) błędy
 	d) coefs
-6. zmodyfikować funkcję (xreg), aby dla dni normalnych(0)- zmienne 0-1 uwzględniające dzień tygodnia, a dla dni specjalnych (1-5) zmienne 0-1 dla całego roku
+DONE 6. zmodyfikować funkcję (xreg), aby dla dni normalnych(0)- zmienne 0-1 uwzględniające dzień tygodnia, a dla dni specjalnych (1-5) zmienne 0-1 dla całego roku
 7. funkcja cft- poprawić funkcjonalność w przypadku gdy model zwraca tylko jedną wartosć (współczynnik)
 
 8. osobe pliki excel dla prognoz wraz z wartościami rzeczywistymi

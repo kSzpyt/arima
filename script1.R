@@ -5,6 +5,7 @@ library(forecast)
 library(ggplot2)
 library(lmtest)
 library(gridExtra)
+source("packages.R")
 
 data <- read_xlsx("dane.xlsx")
 
@@ -41,21 +42,41 @@ data.zeros <- function(df, n.start = 6, n.stop = dim(df)[2])
   return(df2)
 }
 
-dummies <- function(df)
+dummies <- function(data)
 {
-  d <- (df[, 5])
-  d <- as.factor(d)
+  # d <- (df[, 5])
+  # d <- as.factor(d)
+  # d <- dummy_cols(d)
+  # dim(d)
+  # d <- d[, -c(1:2)]
+  # names(d) <- paste0("ds", 1:5)
+  # d <- as.matrix(d)
+  # return(d)
+  aa <- data %>%
+    select(dni_specjalne)
+  
+  d.norm <- which(aa == 0)
+  d.spec <- which(aa != 0)
+  
+  d <- as.factor(data$nrdnia)
   d <- dummy_cols(d)
-  dim(d)
-  d <- d[, -c(1:2)]
-  names(d) <- paste0("ds", 1:5)
-  d <- as.matrix(d)
-  return(d)
+  
+  aaa <- cbind(d, ds1 = NA, ds2 = NA, ds3 = NA, ds4 = NA, ds5 = NA)
+  
+  ds <- as.factor(data$dni_specjalne)
+  ds <- dummy_cols(ds)
+  ds <- ds[, -c(1:2)]
+  
+  aaa[which(data2$key %in% d.norm), 9:13] <- 0
+  aaa[which(data2$key %in% d.spec), 9:13] <- ds[which(data2$key %in% d.spec), ]
+  aaa[which(data2$key %in% d.spec), 2:8] <- 0
+  colnames(aaa) <- c("pon", "wt", "sr", "czw", "pt", "sb", "nd", "ds1", "ds2", "ds3", "ds4", "ds5")
+  
+  return(aaa)
 }
 
 
-
-
-
+#robimy dummy variable takie że są 0-1 dla dni normalnych oraz cbind z dniami specjlanymi (1-5)
+#pon wt sr czw pt sb nd ds1 ds2 ds3 ds4 ds5
 
 
