@@ -30,10 +30,10 @@ df.xl.write2 <- function(foo.list, data, typ, i)
   colnames(df.whole) <- c(paste0("real_", nam), paste0("fitted_", nam))#tu dopisać nazwę zmiennej
   
   #DOPYTAĆ JAK POKAZAĆ RESZTY
-  # df.rest.pred <- data.frame(rep(0, dim(data)[1]), rep(0, dim(data)[1]))
-  # df.rest.pred[foo.list$wind, ] <- data.frame(as.numeric(foo.list$res), as.numeric(foo.list$model$fitted))
-  # df.rest.pred[foo.list$pred.wind, ] <- data.frame(as.numeric(foo.list$res), as.numeric(foo.list$model$fitted))
-  # colnames(df.real) <- c(paste0("real_", nam), paste0("fitted_", nam))
+  df.rest.pred <- data.frame(rep(0, dim(data)[1]), rep(0, dim(data)[1]))
+  df.rest.pred[foo.list$wind, ] <- data.frame(as.numeric(foo.list$res), as.numeric(foo.list$model$fitted))
+  df.rest.pred[foo.list$pred.wind, ] <- data.frame(as.numeric(data[foo.list$pred.wind, foo.list$nr] - foo.list$pred.trend), as.numeric(foo.list$fcast.res))
+  colnames(df.rest.pred) <- c(paste0("real_", nam), paste0("fitted_", nam))
   
   df.whole.pred <- data.frame(rep(0, dim(data)[1]), rep(0, dim(data)[1]))
   df.whole.pred[foo.list$wind, ] <- data.frame(as.numeric(foo.list$dat), as.numeric(foo.list$model$fitted+foo.list$trend))
@@ -81,13 +81,13 @@ df.xl.write2 <- function(foo.list, data, typ, i)
   {
     wb <- createWorkbook()
     sheet.rf.real <- addWorksheet(wb, "real-fitted rest+trend")
-    # sheet.rf.rest <- addWorksheet(wb, "real-fitted rest")
+    sheet.rf.rest <- addWorksheet(wb, "real-fitted rest")
     sheet.error <- addWorksheet(wb, "errors")
     sheet.coef <- addWorksheet(wb, "coefs")
     sheet.infcrit <- addWorksheet(wb, "infcrit")
     
     writeData(wb = wb, sheet = sheet.rf.real, data.frame("data" = data$data), rowNames = FALSE, startCol = 1)
-    # writeData(wb = wb, sheet = sheet.rf.rest, data.frame("data" = data$data), rowNames = FALSE, startCol = 1)
+    writeData(wb = wb, sheet = sheet.rf.rest, data.frame("data" = data$data), rowNames = FALSE, startCol = 1)
     writeData(wb = wb, sheet = sheet.error, data.frame("names" = rownames(errors.res.fitted)), rowNames = FALSE, startCol = 1)
     writeData(wb = wb, sheet = sheet.infcrit, data.frame("names" = rownames(infcrit)), rowNames = FALSE, startCol = 1)
     # writeData(wb = wb, sheet = sheet.coef, data.frame("names" = rownames(ct)), rowNames = FALSE, startCol = 1)
@@ -97,7 +97,7 @@ df.xl.write2 <- function(foo.list, data, typ, i)
   {
     wb <- loadWorkbook(file.path(getwd(), "files", paste0("predicted_", as.character(typ), ".xlsx"))) 
     sheet.rf.real <- "real-fitted rest+trend"
-    # sheet.rf.rest <- "real-fitted rest"
+    sheet.rf.rest <- "real-fitted rest"
     sheet.error <- "errors"
     sheet.coef <- "coefs"
     sheet.infcrit <-"infcrit"
@@ -105,7 +105,7 @@ df.xl.write2 <- function(foo.list, data, typ, i)
   
   #####################################################################################
   writeData(wb = wb, sheet = sheet.rf.real, df.whole.pred, rowNames = FALSE, startCol = i*2)
-  # writeData(wb = wb, sheet = sheet.rf.rest, df.rest, rowNames = FALSE, startCol = i*2)
+  writeData(wb = wb, sheet = sheet.rf.rest, df.rest.pred, rowNames = FALSE, startCol = i*2)
   writeData(wb = wb, sheet = sheet.error, errors.whole.predicted, rowNames = FALSE, startCol = i + 1)
   writeData(wb = wb, sheet = sheet.infcrit, infcrit, rowNames = FALSE, startCol = i + 1)
   writeData(wb = wb, sheet = sheet.coef, coef.pval, rowNames = TRUE, startCol = i*3-2)

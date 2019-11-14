@@ -59,26 +59,20 @@ selfarima2 <- function(data, start.date = "2010-01-01", end.date = "2012-12-31",
   
   pp <- xyplot(x ~ 1:length(x), data = ddff, group = y, type = "b", col = c("black", "red"))
   ###################################################################################
-  li <- list(res = res, fcast.res = fcast.res, 
+  pred.trend <- lt$pred.trend
+  li <- list(res = res, fcast.res = fcast.res$mean, 
              dat= dat, fcast = fcast, 
-             nr = nr, wind = wind, model = model, pp = pp, 
+             nr = nr, model = model, pp = pp, 
              wind = wind, pred.wind = (wind[length(wind)]+1):(wind[length(wind)]+n),
-             trend = trend)
+             trend = trend, pred.trend = pred.trend)
   
   if(result.save == TRUE)
   {
-    df.xl.write(li, data, typ= typ, i = i)
+    df.xl.write2(li, data, typ= typ, i = i)
     
   }
   else
   {
     return(li)
   }
-  
-  
-  
-  
-  
-  
 }
-

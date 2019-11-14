@@ -132,9 +132,16 @@ a$pp
 df.xl.write2(a, data2, typ = "test", i = 1)
 df.xl.write2(b, data2, typ = "test", i = 2)
 
-b.xreg <- selfarima2(data2, start.date = "2011-01-01", end.date = "2012-01-01", nr = 7, 
-                     result.save = FALSE, i = 1, type = "xreg", xr = as.matrix(ddd), n = 52, seas = FALSE)
+b.xreg <- selfarima2(data2, start.date = "2010-01-01", end.date = "2011-12-31", nr = 7, 
+                     result.save = FALSE, i = 1, type = "xreg", xr = as.matrix(ddd), n = 14, seas = FALSE)
 b.xreg$pp
+df.xl.write2(b.xreg, data2, typ = "test_xreg", i = 1)
+
+c <- selfarima2(data2, start.date = "2010-01-01", end.date = "2011-12-31", nr = 7, 
+                     result.save = FALSE, i = 1, type = "xreg", xr = as.matrix(d), n = 14, seas = TRUE)
+c$pp
+df.xl.write2(c, data2, typ = "sez_ds", i = 1)
+
 
 b.xreg <- selfarima2(data2, start.date = "2011-01-01", end.date = "2012-01-01", nr = 7, result.save = FALSE, i = 1, type = "xreg", xr = as.matrix(), n = 52)
 df.xl.write2(a, data2, typ = "test_xreg", i = 1)

@@ -20,7 +20,7 @@ logistic.trend <- function(data, nr = 7, wind = NULL, n = 7)
   len <- wind[length(wind)] + 1
   pred.trend <- phi1/(1 + exp(-(phi2 + phi3 * (len:(len+n-1) ))))
   
-  return(list(res, dat, pred.trend))
+  return(list(res = res, dat = dat, pred.trend = pred.trend))
 }
 
 plot.logistic.trend <- function(logistic.list)
@@ -35,8 +35,8 @@ plot.logistic.trend <- function(logistic.list)
 }
 
 
-t <- logistic.trend(data2, nr = 7, n = 52)
-plot.logistic.trend(a[[6]])
+t <- logistic.trend(data2, nr = 10, n = 52)
+plot.logistic.trend(t)
 
 xd <- t[[3]] + a[[4]]
 

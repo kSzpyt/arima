@@ -17,34 +17,16 @@ Wszystko ma być na podstawie reszt z modelu!!!
 uwzględnienie daty zrobione
 
 
-library(car)
-logistic.trend <- function(data, nr = 7, wind = NULL)
-{
-  if(is.null(wind)) wind <- data$key
-  
-  dat <- data[wind, nr]
-  coefs <- coef(lm(logit(dat/max(dat))~wind))
-  
-  model <- nls(dat ~ phi1/(1+phi2 * exp(-(phi3*wind))), 
-              start=list(phi1 = max(dat), phi2 = (coefs[1]), phi3 = (coefs[2])), data = data, trace = TRUE, algorithm = "plinear")
-  
-  phi1 <- coef(model)[1]
-  phi2 <- coef(model)[2]
-  phi3 <- coef(model)[3]
-  trend <- phi1/(1 + exp(-(phi2 + phi3 * wind))) 
-  
-  res <- data.frame(x = wind, fit = trend)
-  
-  return(list(res, dat))
-}
 
-plot.logistic.trend <- function(logistic.list)
-{
-  dat <- logistic.list[[2]]
-  predict <- logistic.list[[1]]
-  
-  cbind(data.frame(data = dat), predict) %>%
-    ggplot(aes(x = x)) + 
-    geom_line(aes(y = data), color = 'blue') + 
-    geom_line(aes(y = fit), color = 'red', size = 2)
-}
+#########################################################
+dummy varaibles
+dodać efekt 1-go dnia miesiąca oraz 10-go
+
+dodać logarytm do trendu
+
+ogarnąc średnie z dni tygodnia (prognozy)
+
+dodatkowy sheet z 4 kolumnami dla zminnej 
+RAW.VOLUMEN FITTED\PRED.VOLUMEN RAW.WIELKOSC F\P.WIELKOSC
+
+ŚREDNIE TAK JAK DUMMY VARAIBLES
