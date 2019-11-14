@@ -22,7 +22,7 @@ uwzględnienie daty zrobione
 dummy varaibles
 dodać efekt 1-go dnia miesiąca oraz 10-go
 
-dodać logarytm do trendu
+PROBLEM dodać logarytm do trendu
 
 ogarnąc średnie z dni tygodnia (prognozy)
 
@@ -30,3 +30,8 @@ dodatkowy sheet z 4 kolumnami dla zminnej
 RAW.VOLUMEN FITTED\PRED.VOLUMEN RAW.WIELKOSC F\P.WIELKOSC
 
 ŚREDNIE TAK JAK DUMMY VARAIBLES
+
+
+
+
+dopytać o logarytm

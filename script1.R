@@ -1,11 +1,11 @@
-library(readxl)
-library(dplyr)
-library(fastDummies)
-library(forecast)
-library(ggplot2)
-library(lmtest)
-library(gridExtra)
-source("packages.R")
+# library(readxl)
+# library(dplyr)
+# library(fastDummies)
+# library(forecast)
+# library(ggplot2)
+# library(lmtest)
+# library(gridExtra)
+# source("packages.R")
 
 data <- read_xlsx("dane.xlsx")
 
@@ -76,10 +76,10 @@ dummies <- function(data)
   return(aaa)
 }
 
-ddd <- dummies(data2)
-#robimy dummy variable takie że są 0-1 dla dni normalnych oraz cbind z dniami specjlanymi (1-5)
-#pon wt sr czw pt sb nd ds1 ds2 ds3 ds4 ds5
-
-d <- as.factor(data2$dni_specjalne)
-d <- dummy_cols(d)
-d <- d[, -c(1:2)]
+# ddd <- dummies(data2)
+# #robimy dummy variable takie że są 0-1 dla dni normalnych oraz cbind z dniami specjlanymi (1-5)
+# #pon wt sr czw pt sb nd ds1 ds2 ds3 ds4 ds5
+# 
+# d <- as.factor(data2$dni_specjalne)
+# d <- dummy_cols(d)
+# d <- d[, -c(1:2)]

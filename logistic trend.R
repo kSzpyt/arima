@@ -1,9 +1,14 @@
 library(car)
-logistic.trend <- function(data, nr = 7, wind = NULL, n = 7)
+logistic.trend <- function(data, nr = 7, wind = NULL, n = 7, log = FALSE, log.rev = FALSE)
 {
   if(is.null(wind)) wind <- data$key
   
   dat <- as.numeric(data[wind, nr])
+  
+  if(log == TRUE)
+  {
+    dat <- log(dat)
+  }
   coefs <- coef(lm(logit(dat/max(dat)) ~ wind))
   
   model <- nlsLM(dat ~ phi1/(1+exp(-(phi2+phi3*wind))), 
@@ -14,13 +19,23 @@ logistic.trend <- function(data, nr = 7, wind = NULL, n = 7)
   phi3 <- coef(model)[3]
   
   trend <- phi1/(1 + exp(-(phi2 + phi3 * wind))) 
+  if(log.rev == TRUE)
+  {
+    trend <- exp(trend)
+  }
   
   res <- data.frame(x = wind, fit = trend)
   
   len <- wind[length(wind)] + 1
   pred.trend <- phi1/(1 + exp(-(phi2 + phi3 * (len:(len+n-1) ))))
   
-  return(list(res = res, dat = dat, pred.trend = pred.trend))
+  if(log.rev == TRUE)
+  {
+    pred.trend <- exp(pred.trend)
+    dat <- exp(dat)
+  }
+  
+  return(list(res = res, dat = dat, pred.trend = pred.trend, trend = trend))
 }
 
 plot.logistic.trend <- function(logistic.list)
@@ -34,29 +49,29 @@ plot.logistic.trend <- function(logistic.list)
     geom_line(aes(y = fit), color = 'red', size = 2)
 }
 
-
-t <- logistic.trend(data2, nr = 10, n = 52)
+# 
+t <- logistic.trend(data2, nr = 8, n = 52, log = TRUE)
 plot.logistic.trend(t)
-
-xd <- t[[3]] + a[[4]]
-
-start.date <- as.POSIXct(start.date, tz = "UTC")
-end.date <- as.POSIXct(end.date, tz = "UTC")
-wind <- which(data$data == start.date):which(data$data == end.date)
-ex <- which(!is.na(data[wind, nr]))
-wind <- wind[ex]
-
-startW <- as.numeric(strftime(head(data$data, 1), format = "%W"))
-startD <- as.numeric(strftime(head(data$data, 1) + 1, format =" %w")) 
-
-lt <- logistic.trend(data = data2, nr = 7, n = 52, wind = (731:1096))
-trend <- lt[[1]][, 2]
-res <- abs(data$`88209_v`[731:1096] - trend)
-ts1 <- ts(res, start = c(startW, startD), frequency = 7)
-
-fitt <- auto.arima(ts1, seasonal = TRUE, approximation = FALSE, stepwise = FALSE) 
-fc <- forecast(fitt, h = 52)
-
-fc$mean
-
-plot(fc$mean, type = "l")
+# 
+# xd <- t[[3]] + a[[4]]
+# 
+# start.date <- as.POSIXct(start.date, tz = "UTC")
+# end.date <- as.POSIXct(end.date, tz = "UTC")
+# wind <- which(data$data == start.date):which(data$data == end.date)
+# ex <- which(!is.na(data[wind, nr]))
+# wind <- wind[ex]
+# 
+# startW <- as.numeric(strftime(head(data$data, 1), format = "%W"))
+# startD <- as.numeric(strftime(head(data$data, 1) + 1, format =" %w")) 
+# 
+# lt <- logistic.trend(data = data2, nr = 7, n = 52, wind = (731:1096))
+# trend <- lt[[1]][, 2]
+# res <- abs(data$`88209_v`[731:1096] - trend)
+# ts1 <- ts(res, start = c(startW, startD), frequency = 7)
+# 
+# fitt <- auto.arima(ts1, seasonal = TRUE, approximation = FALSE, stepwise = FALSE) 
+# fc <- forecast(fitt, h = 52)
+# 
+# fc$mean
+# 
+# plot(fc$mean, type = "l")

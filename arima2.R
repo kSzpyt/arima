@@ -1,15 +1,17 @@
-library(forecast)
-library(openxlsx)
-library(plyr)
-library(dplyr)
-library(lattice)
+# library(forecast)
+# library(openxlsx)
+# library(plyr)
+# library(dplyr)
+# library(lattice)
 source("testy.R")
 source("errors.R")
 source("script1.R")
 source("writedata.R")
+source("logistic trend.R")
+source("packages.R")
 
 selfarima2 <- function(data, start.date = "2010-01-01", end.date = "2012-12-31", nr = 7, n = 7, log = FALSE,
-                      type = "simple", xr = NULL, result.save = TRUE, typ = "AAA", i, seas = TRUE)
+                      type = "simple", xr = NULL, result.save = TRUE, typ = NULL, i, seas = TRUE)
 {
   ###################################################################################
   start.date <- as.POSIXct(start.date, tz = "UTC", format = c("%Y-%m-%d"))
@@ -27,8 +29,8 @@ selfarima2 <- function(data, start.date = "2010-01-01", end.date = "2012-12-31",
     dat <- log(dat)
   }
   ###################################################################################
-  lt <- logistic.trend(data = data, nr = nr, wind = wind, n = n)
-  trend <- lt[[1]][, 2]
+  lt <- logistic.trend(data = data, nr = nr, wind = wind, n = n, log = log)
+  trend <- lt$trend
   res <- dat - trend
   ts1 <- ts(res, start = c(startW, startD), frequency = 7)
   ###################################################################################
@@ -45,15 +47,17 @@ selfarima2 <- function(data, start.date = "2010-01-01", end.date = "2012-12-31",
   ###################################################################################
   if(log ==TRUE)
   {
-    fcast$mean <- exp(fcast$mean)
-    fcast$upper <- exp(fcast$upper)
-    fcast$lower <- exp(fcast$lower)
-    fcast$x <- exp(fcast$x)
+    fcast.res$mean <- exp(fcast.res$mean)
+    # fcast.res$upper <- exp(fcast$upper)
+    # fcast.res$lower <- exp(fcast$lower)
+    # fcast.res$x <- exp(fcast$x)
     model$fitted <- exp(model$fitted)
     dat <- exp(dat)
+    trend <- exp(trend)
+    lt$pred.trend <- exp(lt$pred.trend)
   }
   ###################################################################################
-  fcast <- lt[[3]] + as.numeric(fcast.res$mean)
+  fcast <- lt$pred.trend + as.numeric(fcast.res$mean)
   
   ddff <- data.frame(x = c(data[wind, nr], fcast), y = c(rep("a", length(wind)), rep("b", length(fcast))))
   
