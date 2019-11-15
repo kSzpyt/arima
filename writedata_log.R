@@ -1,4 +1,4 @@
-df.xl.write2 <- function(foo.list, data, typ, i, log)
+df.xl.write.log <- function(foo.list, data, typ, i)
 {
   nam <- colnames(data)[foo.list$nr]
   #####################################################################################
@@ -7,7 +7,7 @@ df.xl.write2 <- function(foo.list, data, typ, i, log)
   colnames(infcrit) <- nam
   #####################################################################################
   errors.res.fitted <- t(as.data.frame(err(foo.list$model$fitted, foo.list$res)))#modelowanie
-
+  
   errors.whole.predicted <- t(as.data.frame(err(data[foo.list$pred.wind, foo.list$nr], foo.list$fcast)))#prognoza
   
   colnames(errors.res.fitted) <- nam
@@ -21,43 +21,24 @@ df.xl.write2 <- function(foo.list, data, typ, i, log)
   coef.pval <- data.frame(foo.list$model$coef, ct[, 2])
   colnames(coef.pval) <- c(paste0("coefs_", nam), paste0("p.val_", nam))
   #####################################################################################
-  #FITTED
   df.rest <- data.frame(rep(0, dim(data)[1]), rep(0, dim(data)[1]))
   df.rest[foo.list$wind, ] <- data.frame(as.numeric(foo.list$res), as.numeric(foo.list$model$fitted))
   colnames(df.rest) <- c(paste0("real_", nam), paste0("fitted_", nam))
   
-  if(log == TRUE)
-  {
-    #FITTED
-    df.whole <- data.frame(rep(0, dim(data)[1]), rep(0, dim(data)[1]))
-    df.whole[foo.list$wind, ] <- data.frame(exp(foo.list$dat), exp(foo.list$model$fitted+foo.list$trend))
-    colnames(df.whole) <- c(paste0("real_", nam), paste0("fitted_", nam))
-    
-    #PREDICTED
-    df.whole.pred <- data.frame(rep(0, dim(data)[1]), rep(0, dim(data)[1]))
-    df.whole.pred[foo.list$wind, ] <- data.frame(exp(foo.list$dat), exp(foo.list$model$fitted+foo.list$trend))
-    df.whole.pred[foo.list$pred.wind, ] <- data.frame(as.numeric(data[foo.list$pred.wind, foo.list$nr]), as.numeric(foo.list$fcast))
-    colnames(df.whole.pred) <- c(paste0("real_", nam), paste0("fitted_", nam))
-  }
-  else
-  {
-    #FITTED
-    df.whole <- data.frame(rep(0, dim(data)[1]), rep(0, dim(data)[1]))
-    df.whole[foo.list$wind, ] <- data.frame(as.numeric(foo.list$dat), as.numeric(foo.list$model$fitted+foo.list$trend))
-    colnames(df.whole) <- c(paste0("real_", nam), paste0("fitted_", nam))
-    
-    #PREDICTED
-    df.whole.pred <- data.frame(rep(0, dim(data)[1]), rep(0, dim(data)[1]))
-    df.whole.pred[foo.list$wind, ] <- data.frame(as.numeric(foo.list$dat), as.numeric(foo.list$model$fitted+foo.list$trend))
-    df.whole.pred[foo.list$pred.wind, ] <- data.frame(as.numeric(data[foo.list$pred.wind, foo.list$nr]), as.numeric(foo.list$fcast))
-    colnames(df.whole.pred) <- c(paste0("real_", nam), paste0("fitted_", nam))
-  }
+  df.whole <- data.frame(rep(0, dim(data)[1]), rep(0, dim(data)[1]))
+  df.whole[foo.list$wind, ] <- data.frame(as.numeric(foo.list$dat), as.numeric(foo.list$model$fitted+foo.list$trend))
+  colnames(df.whole) <- c(paste0("real_", nam), paste0("fitted_", nam))#tu dopisać nazwę zmiennej
   
-  #PREDICTED
+  #DOPYTAĆ JAK POKAZAĆ RESZTY
   df.rest.pred <- data.frame(rep(0, dim(data)[1]), rep(0, dim(data)[1]))
   df.rest.pred[foo.list$wind, ] <- data.frame(as.numeric(foo.list$res), as.numeric(foo.list$model$fitted))
   df.rest.pred[foo.list$pred.wind, ] <- data.frame(as.numeric(data[foo.list$pred.wind, foo.list$nr] - foo.list$pred.trend), as.numeric(foo.list$fcast.res))
   colnames(df.rest.pred) <- c(paste0("real_", nam), paste0("fitted_", nam))
+  
+  df.whole.pred <- data.frame(rep(0, dim(data)[1]), rep(0, dim(data)[1]))
+  df.whole.pred[foo.list$wind, ] <- data.frame(as.numeric(foo.list$dat), as.numeric(foo.list$model$fitted+foo.list$trend))
+  df.whole.pred[foo.list$pred.wind, ] <- data.frame(as.numeric(data[foo.list$pred.wind, foo.list$nr]), as.numeric(foo.list$fcast))
+  colnames(df.whole.pred) <- c(paste0("real_", nam), paste0("fitted_", nam))#tu dopisać nazwę zmiennej
   #####################################################################################
   dir.create(file.path(getwd(), "files"), showWarnings = FALSE)
   

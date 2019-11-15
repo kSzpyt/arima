@@ -1,5 +1,6 @@
 load.lib<-c("readxl", "plyr", "fastDummies","forecast","ggplot2","lmtest",
-            "gridExtra","forecast","openxlsx","dplyr","lattice", 'stringr', "data.table", "TSA", "tseries", "dygraphs", "car")
+            "gridExtra","forecast","openxlsx","dplyr","lattice", 'stringr', 
+            "data.table", "TSA", "tseries", "dygraphs", "car", "lubridate")
 
 
 install.lib<-load.lib[!load.lib %in% installed.packages()]

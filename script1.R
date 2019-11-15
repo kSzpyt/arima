@@ -39,47 +39,94 @@ data.zeros <- function(df, n.start = 6, n.stop = dim(df)[2])
     df2[index, n] <- means[zeros]
   }
   df2 <- cbind("key" = as.numeric(rownames(df2)), df2)
-  return(df2)
+  df3 <- ds67(df2)
+  
+  return(df3)
 }
 
-dummies <- function(data)
+dummies <- function(data, type = "")
 {
-  # d <- (df[, 5])
-  # d <- as.factor(d)
-  # d <- dummy_cols(d)
-  # dim(d)
-  # d <- d[, -c(1:2)]
-  # names(d) <- paste0("ds", 1:5)
-  # d <- as.matrix(d)
-  # return(d)
-  aa <- data %>%
-    select(dni_specjalne)
-  
-  d.norm <- which(aa == 0)
-  d.spec <- which(aa != 0)
-  
-  d <- as.factor(data$nrdnia)
-  d <- dummy_cols(d)
-  
-  aaa <- cbind(d, ds1 = NA, ds2 = NA, ds3 = NA, ds4 = NA, ds5 = NA)
-  
-  ds <- as.factor(data$dni_specjalne)
-  ds <- dummy_cols(ds)
-  ds <- ds[, -c(1:2)]
-  
-  aaa[which(data2$key %in% d.norm), 9:13] <- 0
-  aaa[which(data2$key %in% d.spec), 9:13] <- ds[which(data2$key %in% d.spec), ]
-  aaa[which(data2$key %in% d.spec), 2:8] <- 0
-  aaa <- aaa[, -c(1:2)]
-  colnames(aaa) <- c("wt", "sr", "czw", "pt", "sb", "nd", "ds1", "ds2", "ds3", "ds4", "ds5")
-  
+  if(type == "dns")
+  {
+    aa <- data %>%
+      select(dni_specjalne)
+    
+    d.norm <- which(aa == 0)
+    d.spec <- which(aa != 0)
+    
+    d <- as.factor(data$nrdnia)
+    d <- dummy_cols(d)
+    
+    aaa <- cbind(d, ds1 = NA, ds2 = NA, ds3 = NA, ds4 = NA, ds5 = NA, ds6 = NA, ds7 = NA)
+    
+    ds <- as.factor(data$dni_specjalne)
+    ds <- dummy_cols(ds)
+    ds <- ds[, -c(1:2)]
+    
+    aaa[which(data2$key %in% d.norm), 9:15] <- 0
+    aaa[which(data2$key %in% d.spec), 9:15] <- ds[which(data2$key %in% d.spec), ]
+    aaa[which(data2$key %in% d.spec), 2:8] <- 0
+    aaa <- aaa[, -c(1:2)]
+    colnames(aaa) <- c("wt", "sr", "czw", "pt", "sb", "nd", paste0("ds", 1:7))
+  }
+  else if (type == "ds")
+  {
+    aaa <- as.factor(data$dni_specjalne)
+    aaa <- dummy_cols(aaa)
+    aaa <- aaa[, -c(1:2)]
+    colnames(aaa) <- paste0("ds", 1:7)
+  }
   return(aaa)
 }
 
-# ddd <- dummies(data2)
-# #robimy dummy variable takie że są 0-1 dla dni normalnych oraz cbind z dniami specjlanymi (1-5)
-# #pon wt sr czw pt sb nd ds1 ds2 ds3 ds4 ds5
+ds67 <- function(data)
+{
+  foo <- function(data, nr)
+  {
+    days.10 <- data %>%
+      select(key, data) %>%
+      filter(day(data) == nr) %>%
+      pull(key)
+    
+    if(nr == 10)
+    {
+      p <- 7
+    }
+    else if(nr == 1)
+    {
+      p <- 6
+    }
+    
+    for (x in days.10)
+    {
+      day <- as.POSIXlt(data$data[x])$wday
+      
+      if(day == 0)
+      {
+        data$dni_specjalne[x-2] <- p
+      }
+      else if (day == 6)
+      {
+        data$dni_specjalne[x-1] <- p
+      }
+      else
+      {
+        data$dni_specjalne[x] <- p
+      }
+    }
+    return(data)
+  }
+  
+  data <- foo(data, 10)
+  data <- foo(data, 1)
+  return(data)
+}
+
+
+# a <- 10
+# day <- as.POSIXlt(data2$data[a])$wday
 # 
-# d <- as.factor(data2$dni_specjalne)
-# d <- dummy_cols(d)
-# d <- d[, -c(1:2)]
+# deys.10 <- data2 %>%
+#   select(key, data) %>%
+#   filter(day(data) == 10) %>%
+#   pull(key)

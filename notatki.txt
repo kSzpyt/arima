@@ -20,18 +20,17 @@ uwzględnienie daty zrobione
 
 #########################################################
 dummy varaibles
-dodać efekt 1-go dnia miesiąca oraz 10-go
+DONE dodać efekt 1-go dnia miesiąca oraz 10-go
 
-PROBLEM dodać logarytm do trendu
+DONE dodać logarytm do trendu
 
 ogarnąc średnie z dni tygodnia (prognozy)
 
 dodatkowy sheet z 4 kolumnami dla zminnej 
 RAW.VOLUMEN FITTED\PRED.VOLUMEN RAW.WIELKOSC F\P.WIELKOSC
 
-ŚREDNIE TAK JAK DUMMY VARAIBLES
+DONE ŚREDNIE TAK JAK DUMMY VARAIBLES
 
 
 
 
-dopytać o logarytm

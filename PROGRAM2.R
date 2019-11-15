@@ -31,9 +31,17 @@ a$pp
 df.xl.write2(a, data2, typ = "sez_ds", i = 1)
 a$pred.trend
 
+dns <- dummies(data2, type = "dns")
+ds <- dummies(data2, type = "ds")
 
-a.log <- selfarima2(data2, start.date = "2011-09-01", end.date = "2012-02-29", nr = 8, 
-                result.save = FALSE, i = 1, type = "xreg", xr = as.matrix(d), n = 14, seas = TRUE, log = TRUE)
+
+a.log <- selfarima2(data2, start.date = "2011-04-01", end.date = "2012-03-30", nr = 8, 
+                result.save = FALSE, i = 1, type = "xreg", xr = as.matrix(ds), n = 14, seas = TRUE, log = TRUE)
 
 a.log$fcast
-df.xl.write2(a.log, data2, typ = "sez_ds", i = 1)
+a.log$pp
+df.xl.write2(a.log, data2, typ = "sez_ds", i = 1, log = TRUE)
+
+plot(data$`88209_k`[a.log$pred.wind], type = "l")
+lines(a.log$fcast, col = "red")
+

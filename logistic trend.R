@@ -50,8 +50,8 @@ plot.logistic.trend <- function(logistic.list)
 }
 
 # 
-t <- logistic.trend(data2, nr = 8, n = 52, log = TRUE)
-plot.logistic.trend(t)
+# t <- logistic.trend(data2, nr = 8, n = 52, log = TRUE)
+# plot.logistic.trend(t)
 # 
 # xd <- t[[3]] + a[[4]]
 # 

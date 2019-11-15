@@ -45,19 +45,23 @@ selfarima2 <- function(data, start.date = "2010-01-01", end.date = "2012-12-31",
     fcast.res <- forecast(model, xreg = xr[1:n, ])
   }
   ###################################################################################
-  if(log ==TRUE)
+  if(log == TRUE)
   {
-    fcast.res$mean <- exp(fcast.res$mean)
+    # fcast.res$mean <- exp(fcast.res$mean)
     # fcast.res$upper <- exp(fcast$upper)
     # fcast.res$lower <- exp(fcast$lower)
     # fcast.res$x <- exp(fcast$x)
-    model$fitted <- exp(model$fitted)
-    dat <- exp(dat)
-    trend <- exp(trend)
-    lt$pred.trend <- exp(lt$pred.trend)
+    # model$fitted <- exp(model$fitted)
+    # dat <- exp(dat)
+    # trend <- exp(trend)
+    # lt$pred.trend <- exp(lt$pred.trend)
   }
   ###################################################################################
   fcast <- lt$pred.trend + as.numeric(fcast.res$mean)
+  if(log == TRUE)
+  {
+    fcast <- exp(fcast)
+  }
   
   ddff <- data.frame(x = c(data[wind, nr], fcast), y = c(rep("a", length(wind)), rep("b", length(fcast))))
   

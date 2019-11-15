@@ -15,6 +15,7 @@ tib <- tib[, -c(1)]
 
 d <- dim(tib)[2]
 
+colnames(select(data2, ends_with("_v")))
 tib <- tib[,((d/2 + 1):d)]/tib[,(1:(d/2))]
 
 tib2 <- data2 %>%
