@@ -169,7 +169,7 @@ write.means <- function(foo.list, data, typ, i)
   else
   {
     wb <- loadWorkbook(file.path(getwd(), "files", paste0("fitted_means_", as.character(typ), ".xlsx")))
-    sheet.rf.real <- "real-fitted rest+trend"
+    sheet.rf.real <- "real-fitted whole"
     sheet.rf.rest <- "real-fitted rest"
     sheet.error <- "errors"
     sheet.coef <- "coefs"
@@ -204,7 +204,7 @@ write.means <- function(foo.list, data, typ, i)
   else
   {
     wb <- loadWorkbook(file.path(getwd(), "files", paste0("pred_means_", as.character(typ), ".xlsx")))
-    sheet.rf.real <- "real-fitted rest+trend"
+    sheet.rf.real <- "real-fitted whole"
     sheet.rf.rest <- "real-fitted rest"
     sheet.error <- "errors"
     sheet.coef <- "coefs"
@@ -227,4 +227,4 @@ write.means <- function(foo.list, data, typ, i)
 # plot(aaa$raw.k[aaa$plis$wind], type = "l")
 # lines(aaa$pred.k, col = "red")
 
-write.means(aaa, data2, typ = "TEST", i = 1)
+# write.means(aaa, data2, typ = "TEST", i = 1)
