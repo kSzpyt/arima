@@ -78,7 +78,8 @@ selfarima.means <- function(data, start.date = "2010-01-01", end.date = "2012-12
     return(f1)
   }
   
-  pred.whole <- foo(vol.pred.list$pred.wind, tib.dn, tib.ds)*vol.pred.list$fcast
+  pred.whole <- foo(vol.pred.list$pred.wind, tib.dn, tib.ds)*vol.pred.list$fcast # podać jak się module dla K
+  
   fit.whole <- foo(vol.pred.list$wind, tib.dn, tib.ds)*(vol.pred.list$model$fitted + vol.pred.list$trend)
   
   # f2 <- rep(NA, length(vol.pred.list$fcast))

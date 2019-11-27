@@ -39,7 +39,7 @@ data.zeros <- function(df, n.start = 6, n.stop = dim(df)[2])
     df2[index, n] <- means[zeros]
   }
   df2 <- cbind("key" = as.numeric(rownames(df2)), df2)
-  df3 <- ds67(df2)
+  df3 <- ds78(df2)
   
   return(df3)
 }
@@ -57,29 +57,29 @@ dummies <- function(data, type = "")
     d <- as.factor(data$nrdnia)
     d <- dummy_cols(d)
     
-    aaa <- cbind(d, ds1 = NA, ds2 = NA, ds3 = NA, ds4 = NA, ds5 = NA, ds6 = NA, ds7 = NA)
+    aaa <- cbind(d, ds1 = NA, ds2 = NA, ds3 = NA, ds4 = NA, ds5 = NA, ds6 = NA, ds7 = NA, ds8 = NA)
     
     ds <- as.factor(data$dni_specjalne)
     ds <- dummy_cols(ds)
     ds <- ds[, -c(1:2)]
     
-    aaa[which(data2$key %in% d.norm), 9:15] <- 0
-    aaa[which(data2$key %in% d.spec), 9:15] <- ds[which(data2$key %in% d.spec), ]
+    aaa[which(data2$key %in% d.norm), 9:length(aaa)] <- 0
+    aaa[which(data2$key %in% d.spec), 9:length(aaa)] <- ds[which(data2$key %in% d.spec), ]
     aaa[which(data2$key %in% d.spec), 2:8] <- 0
     aaa <- aaa[, -c(1:2)]
-    colnames(aaa) <- c("wt", "sr", "czw", "pt", "sb", "nd", paste0("ds", 1:7))
+    colnames(aaa) <- c("wt", "sr", "czw", "pt", "sb", "nd", paste0("ds", 1:8))
   }
   else if (type == "ds")
   {
     aaa <- as.factor(data$dni_specjalne)
     aaa <- dummy_cols(aaa)
     aaa <- aaa[, -c(1:2)]
-    colnames(aaa) <- paste0("ds", 1:7)
+    colnames(aaa) <- paste0("ds", 1:8)
   }
   return(aaa)
 }
 
-ds67 <- function(data)
+ds78 <- function(data)
 {
   foo <- function(data, nr)
   {
@@ -90,11 +90,11 @@ ds67 <- function(data)
     
     if(nr == 10)
     {
-      p <- 7
+      p <- 8
     }
     else if(nr == 1)
     {
-      p <- 6
+      p <- 7
     }
     
     for (x in days.10)
@@ -121,8 +121,10 @@ ds67 <- function(data)
   data <- foo(data, 1)
   return(data)
 }
-
-
+data2 <- data.zeros(data)
+dns <- dummies(data2, type = "dns")
+ds <- dummies(data2, type = "ds")
+plots(data2)
 # a <- 10
 # day <- as.POSIXlt(data2$data[a])$wday
 # 

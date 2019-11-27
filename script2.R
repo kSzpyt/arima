@@ -49,5 +49,5 @@ plots <- function(data, n.start = 7, n.stop = dim(df)[2], log = FALSE)
     dev.off()
   }
 }
-plots(data2)
+# plots(data2)
 
