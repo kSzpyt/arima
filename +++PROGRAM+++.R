@@ -4,8 +4,8 @@ s1 <- seq(7, dim(data2)[2], by = 6)
 s2 <- seq(8, dim(data2)[2], by = 6)
 i <- 1
 n <- 14
-start <- "2011-03-01"
-end <- "2012-02-29"
+start <- "2011-05-01"
+end <- "2012-04-30"
 
 for (x in s1) 
 {
@@ -23,13 +23,13 @@ for (x in s1)
 i <- 1
 for (x in s2) 
 {
-  selfarima2(data2, start.date = start, end.date = end, nr = n, result.save = TRUE, i = i, type = "simple", n = n, seas = TRUE, log = TRUE , typ = "simple_log")
-  selfarima2(data2, start.date = start, end.date = end, nr = n, result.save = TRUE, i = i, type = "xreg", xr = as.matrix(ds), n = n, seas = TRUE, log = TRUE , typ = "xreg_ds_log")
-  selfarima2(data2, start.date = start, end.date = end, nr = n, result.save = TRUE, i = i, type = "xreg", xr = as.matrix(dns), n = n, seas = FALSE, log = TRUE , typ = "xreg_dns_log")
+  selfarima2(data2, start.date = start, end.date = end, nr = x, result.save = TRUE, i = i, type = "simple", n = n, seas = TRUE, log = TRUE , typ = "simple_log")
+  selfarima2(data2, start.date = start, end.date = end, nr = x, result.save = TRUE, i = i, type = "xreg", xr = as.matrix(ds), n = n, seas = TRUE, log = TRUE , typ = "xreg_ds_log")
+  selfarima2(data2, start.date = start, end.date = end, nr = x, result.save = TRUE, i = i, type = "xreg", xr = as.matrix(dns), n = n, seas = FALSE, log = TRUE , typ = "xreg_dns_log")
   
-  selfarima2(data2, start.date = start, end.date = end, nr = n, result.save = TRUE, i = i, type = "simple", n = n, seas = TRUE, log = FALSE , typ = "simple")
-  selfarima2(data2, start.date = start, end.date = end, nr = n, result.save = TRUE, i = i, type = "xreg", xr = as.matrix(ds), n = n, seas = TRUE, log = FALSE , typ = "xreg_ds")
-  selfarima2(data2, start.date = start, end.date = end, nr = n, result.save = TRUE, i = i, type = "xreg", xr = as.matrix(dns), n = n, seas = FALSE, log = FALSE , typ = "xreg_dns")
+  selfarima2(data2, start.date = start, end.date = end, nr = x, result.save = TRUE, i = i, type = "simple", n = n, seas = TRUE, log = FALSE , typ = "simple")
+  selfarima2(data2, start.date = start, end.date = end, nr = x, result.save = TRUE, i = i, type = "xreg", xr = as.matrix(ds), n = n, seas = TRUE, log = FALSE , typ = "xreg_ds")
+  selfarima2(data2, start.date = start, end.date = end, nr = x, result.save = TRUE, i = i, type = "xreg", xr = as.matrix(dns), n = n, seas = FALSE, log = FALSE , typ = "xreg_dns")
   
   i <- i + 1
 }
