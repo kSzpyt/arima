@@ -99,7 +99,7 @@ selfarima.means <- function(data, start.date = "2010-01-01", end.date = "2012-12
 
 write.means <- function(foo.list, data, typ, i)
 {
-  nam <- colnames(data)[foo.list$nr]
+  nam <- colnames(data)[foo.list$plis$nr]
   #####################################################################################
   infcrit <- t(data.frame(foo.list$plis$model$aic, foo.list$plis$model$aicc, foo.list$plis$model$bic))
   rownames(infcrit) <- c("aic", "aicc", "bic")
@@ -181,7 +181,7 @@ write.means <- function(foo.list, data, typ, i)
   writeData(wb = wb, sheet = sheet.rf.rest, df.rest.fitted, rowNames = FALSE, startCol = i*2)
   writeData(wb = wb, sheet = sheet.error, errors.res.fitted, rowNames = FALSE, startCol = i + 1)
   writeData(wb = wb, sheet = sheet.infcrit, infcrit, rowNames = FALSE, startCol = i + 1)
-  writeData(wb = wb, sheet = sheet.coef, coef.pval, rowNames = TRUE, startCol = i*2-1)
+  writeData(wb = wb, sheet = sheet.coef, coef.pval, rowNames = TRUE, startCol = i * 3 - 2)
   
   saveWorkbook(wb, file = file.path(getwd(), "files", paste0("fitted_means_", as.character(typ), ".xlsx")), overwrite = TRUE)
   

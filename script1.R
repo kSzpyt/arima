@@ -81,44 +81,61 @@ dummies <- function(data, type = "")
 
 ds78 <- function(data)
 {
-  foo <- function(data, nr)
-  {
     days.10 <- data %>%
       select(key, data) %>%
-      filter(day(data) == nr) %>%
+      filter(day(data) == c(1) | day(data) == c(10)) %>%
       pull(key)
-    
-    if(nr == 10)
-    {
-      p <- 8
-    }
-    else if(nr == 1)
-    {
-      p <- 7
-    }
     
     for (x in days.10)
     {
       day <- as.POSIXlt(data$data[x])$wday
+      daytype <- data$dni_specjalne[x]
+      month.day <- data$Dzien[x]
       
-      if(day == 0)
+      if(month.day == 10)
       {
-        data$dni_specjalne[x-2] <- p
+        p <- 8
+        
+        # for (x in days.10)
+        # {
+        # x <- which(data$key == x$key)
+        # day <- as.POSIXlt(data$data[x])$wday
+        # daytype <- data$dni_specjalne[x]
+        
+        i <- 0
+        while (day == 0 | day == 6 | daytype == 1) 
+        {
+          i <- i + 1
+          day <- as.POSIXlt(data$data[x - i])$wday
+          daytype <- data$dni_specjalne[x - i]
+        }
+        
+        data$dni_specjalne[x - i] <- p
+        # }
       }
-      else if (day == 6)
+      else if(month.day == 1)
       {
-        data$dni_specjalne[x-1] <- p
-      }
-      else
-      {
-        data$dni_specjalne[x] <- p
+        p <- 7
+        
+        # for (x in days.10)
+        # {
+        # x <- which(data$key == x$key)
+        # day <- as.POSIXlt(data$data[x])$wday
+        # daytype <- data$dni_specjalne[x]
+        
+        i <- 0
+        while (day == 0 | day == 6 | daytype == 1) 
+        {
+          i <- i + 1
+          day <- as.POSIXlt(data$data[x + i])$wday
+          daytype <- data$dni_specjalne[x + i]
+        }
+        
+        data$dni_specjalne[x + i] <- p
+        # }
+        
       }
     }
-    return(data)
-  }
-  
-  data <- foo(data, 10)
-  data <- foo(data, 1)
   return(data)
 }
 data2 <- data.zeros(data)
