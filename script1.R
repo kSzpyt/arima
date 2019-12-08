@@ -10,7 +10,7 @@
 data <- read_xlsx("dane.xlsx")
 
 #funkcja do usuwania zer
-data.zeros <- function(df, n.start = 6, n.stop = dim(df)[2])
+data.zeros <- function(df, n.start = 6, n.stop = dim(df)[2], efekty = TRUE)
 {
   unlink(file.path(getwd(), "files"), recursive = TRUE)
   unlink(file.path(getwd(), "plots"), recursive = TRUE)
@@ -61,8 +61,12 @@ data.zeros <- function(df, n.start = 6, n.stop = dim(df)[2])
     
     df2[index, n] <- means[zeros]
   }
-  df2 <- cbind("key" = as.numeric(rownames(df2)), df2)
-  df3 <- ds78(df2)
+  df3 <- cbind("key" = as.numeric(rownames(df2)), df2)
+  
+  if(efekty == TRUE)
+  {
+    df3 <- ds78(df3)
+  }
   
   return(df3)
 }
@@ -170,7 +174,7 @@ ds78 <- function(data)
     }
   return(data)
 }
-data2 <- data.zeros(data)
+data2 <- data.zeros(data, efekty = efekt.d1.d10)
 dns <- dummies(data2, type = "dns")
 ds <- dummies(data2, type = "ds")
 # plots(data2)

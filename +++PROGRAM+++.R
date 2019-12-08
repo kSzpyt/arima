@@ -1,3 +1,6 @@
+#jeżeli wartość poniższej zmiennej będzie ustawiona na FALSE to efekty nie zostaną uwzględnione
+#TRUE to uwzględnienie efektóW dnia pierwszego i ostatniego
+efekt.d1.d10 <- FALSE #TRUE
 source("files.R")
 
 s1 <- seq(7, dim(data2)[2], by = 6)
@@ -9,6 +12,8 @@ end <- "2010-06-30"
 
 s1 <- s1[1]
 s2 <- s2[1]
+
+
 
 for (x in s1) 
 {

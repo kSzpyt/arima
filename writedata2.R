@@ -18,8 +18,15 @@ df.xl.write2 <- function(foo.list, data, typ, i, log)
   foo.list$model$coef <- foo.list$model$coef[complete.cases(ct)]
   ct <- ct[complete.cases(ct), ]
   
-  coef.pval <- data.frame(foo.list$model$coef, ct[, 2])
-  colnames(coef.pval) <- c(paste0("coefs_", nam), paste0("p.val_", nam))
+  if("Estimate" %in% rownames(ct))
+  {
+    ct <- t(ct)
+    rownames(ct) <- names(foo.list$model)
+    ct <- as.data.frame(ct)
+  }
+  
+  coef.pval <- data.frame(ct[, 1], foo.list$model$coef, ct[, 2])
+  colnames(coef.pval) <- c("", paste0("coefs_", nam), paste0("p.val_", nam))
   #####################################################################################
   #FITTED
   df.rest <- data.frame(rep(0, dim(data)[1]), rep(0, dim(data)[1]))
@@ -91,7 +98,7 @@ df.xl.write2 <- function(foo.list, data, typ, i, log)
   writeData(wb = wb, sheet = sheet.rf.rest, df.rest, rowNames = FALSE, startCol = i*2)
   writeData(wb = wb, sheet = sheet.error, errors.res.fitted, rowNames = FALSE, startCol = i + 1)
   writeData(wb = wb, sheet = sheet.infcrit, infcrit, rowNames = FALSE, startCol = i + 1)
-  writeData(wb = wb, sheet = sheet.coef, coef.pval, rowNames = TRUE, startCol = i*2)
+  writeData(wb = wb, sheet = sheet.coef, coef.pval, rowNames = FALSE, startCol = i*3-2)
   
   saveWorkbook(wb, file = file.path(getwd(), "files", paste0("fitted_", as.character(typ), ".xlsx")), overwrite = TRUE)
   
@@ -127,7 +134,7 @@ df.xl.write2 <- function(foo.list, data, typ, i, log)
   writeData(wb = wb, sheet = sheet.rf.rest, df.rest.pred, rowNames = FALSE, startCol = i*2)
   writeData(wb = wb, sheet = sheet.error, errors.whole.predicted, rowNames = FALSE, startCol = i + 1)
   writeData(wb = wb, sheet = sheet.infcrit, infcrit, rowNames = FALSE, startCol = i + 1)
-  writeData(wb = wb, sheet = sheet.coef, coef.pval, rowNames = TRUE, startCol = i*3-2)
+  writeData(wb = wb, sheet = sheet.coef, coef.pval, rowNames = FALSE, startCol = i*3-2)
   
   saveWorkbook(wb, file = file.path(getwd(), "files", paste0("predicted_", as.character(typ), ".xlsx")), overwrite = TRUE)
 }
