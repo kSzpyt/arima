@@ -6,11 +6,16 @@ tibb.dn.dns <- function(data)
     group_by(nrdnia) %>%
     summarise_at(vars(-dni_specjalne), sum)
   
+  # names.dn <- (tib.dn$nrdnia)
+  
   tib.ds <- data %>%
     select(nrdnia, dni_specjalne, ends_with("_v"), ends_with("_k")) %>%
     filter(dni_specjalne != 0) %>%
     group_by(dni_specjalne) %>%
     summarise_at(vars(-nrdnia), sum)
+  
+  
+  # names.ds <- (tib.ds$dni_specjalne)
   
   
   tib.mean <- function(tib)
@@ -29,8 +34,12 @@ tibb.dn.dns <- function(data)
   }
   
   tib.dn <- tib.mean(tib.dn)
+  colnames(tib.dn)[1] <- "normalne"
+  # rownames(tib.dn) <- names.dn
   # colnames(tib.dn) <- paste0("m", seq(7, dim(data)[2], by = 6))
   tib.ds <- tib.mean(tib.ds)
+  colnames(tib.ds)[1] <- "specjalne"
+  # rownames(tib.dn) <- names.ds
   return(list(tib.dn = tib.dn, tib.ds = tib.ds))
 }
 
@@ -92,7 +101,7 @@ selfarima.means <- function(data, start.date = "2010-01-01", end.date = "2012-12
   return(list(raw.vol = data[, nr], fit.vol = vol.pred.list$model$fitted, 
               raw.k = data[, nr + 1], fit.k = fit.whole,
               pred.vol = vol.pred.list$fcast, pred.k = pred.whole, 
-              plis = vol.pred.list))
+              plis = vol.pred.list, tib.ds = tib.ds, tib.dn = tib.dn))
 }
 
 
@@ -117,8 +126,15 @@ write.means <- function(foo.list, data, typ, i)
   foo.list$plis$model$coef <- foo.list$plis$model$coef[complete.cases(ct)]
   ct <- ct[complete.cases(ct), ]
   
-  coef.pval <- data.frame(foo.list$plis$model$coef, ct[, 2])
-  colnames(coef.pval) <- c(paste0("coefs_", nam), paste0("p.val_", nam))
+  if("Estimate" %in% rownames(ct))
+  {
+    ct <- t(ct)
+    rownames(ct) <- names(foo.list$plis$model)
+    ct <- as.data.frame(ct)
+  }
+  
+  coef.pval <- data.frame(ct[, 1], foo.list$plis$model$coef, ct[, 2])
+  colnames(coef.pval) <- c("", paste0("coefs_", nam), paste0("p.val_", nam))
   #####################################################################################
   #REST
   df.rest.fitted <- data.frame(rep(0, dim(data)[1]), rep(0, dim(data)[1]))
@@ -160,12 +176,15 @@ write.means <- function(foo.list, data, typ, i)
     sheet.error <- addWorksheet(wb, "errors")
     sheet.coef <- addWorksheet(wb, "coefs")
     sheet.infcrit <- addWorksheet(wb, "infcrit")
+    sheet.means <- addWorksheet(wb, "means")
     
     writeData(wb = wb, sheet = sheet.rf.real, data.frame("data" = data$data), rowNames = FALSE, startCol = 1)
     writeData(wb = wb, sheet = sheet.rf.rest, data.frame("data" = data$data), rowNames = FALSE, startCol = 1)
     writeData(wb = wb, sheet = sheet.error, data.frame("names" = rownames(errors.res.fitted)), rowNames = FALSE, startCol = 1)
     writeData(wb = wb, sheet = sheet.infcrit, data.frame("names" = rownames(infcrit)), rowNames = FALSE, startCol = 1)
     # writeData(wb = wb, sheet = sheet.coef, data.frame("names" = rownames(ct)), rowNames = FALSE, startCol = 1)
+    writeData(wb = wb, sheet = sheet.means, foo.list$tib.ds, rowNames = FALSE)
+    writeData(wb = wb, sheet = sheet.means, foo.list$tib.dn, rowNames = FALSE, startRow = 3 + dim(foo.list$tib.ds)[1])
   }
   else
   {
@@ -175,13 +194,14 @@ write.means <- function(foo.list, data, typ, i)
     sheet.error <- "errors"
     sheet.coef <- "coefs"
     sheet.infcrit <-"infcrit"
+    sheet.means <-"means"
   }
   
   writeData(wb = wb, sheet = sheet.rf.real, cbind(df.whole.fitted.vol, df.whole.fitted.k), rowNames = FALSE, startCol = ((i * 4) - 2))
   writeData(wb = wb, sheet = sheet.rf.rest, df.rest.fitted, rowNames = FALSE, startCol = i*2)
   writeData(wb = wb, sheet = sheet.error, errors.res.fitted, rowNames = FALSE, startCol = i + 1)
   writeData(wb = wb, sheet = sheet.infcrit, infcrit, rowNames = FALSE, startCol = i + 1)
-  writeData(wb = wb, sheet = sheet.coef, coef.pval, rowNames = TRUE, startCol = i * 3 - 2)
+  writeData(wb = wb, sheet = sheet.coef, coef.pval, rowNames = FALSE, startCol = i * 3 - 2)
   
   saveWorkbook(wb, file = file.path(getwd(), "files", paste0("fitted_means_", as.character(typ), ".xlsx")), overwrite = TRUE)
   
@@ -195,12 +215,16 @@ write.means <- function(foo.list, data, typ, i)
     sheet.error <- addWorksheet(wb, "errors")
     sheet.coef <- addWorksheet(wb, "coefs")
     sheet.infcrit <- addWorksheet(wb, "infcrit")
+    sheet.means <- addWorksheet(wb, "means")
+    
     
     writeData(wb = wb, sheet = sheet.rf.real, data.frame("data" = data$data), rowNames = FALSE, startCol = 1)
     writeData(wb = wb, sheet = sheet.rf.rest, data.frame("data" = data$data), rowNames = FALSE, startCol = 1)
     writeData(wb = wb, sheet = sheet.error, data.frame("names" = rownames(errors.res.fitted)), rowNames = FALSE, startCol = 1)
     writeData(wb = wb, sheet = sheet.infcrit, data.frame("names" = rownames(infcrit)), rowNames = FALSE, startCol = 1)
     # writeData(wb = wb, sheet = sheet.coef, data.frame("names" = rownames(ct)), rowNames = FALSE, startCol = 1)
+    writeData(wb = wb, sheet = sheet.means, foo.list$tib.ds, rowNames = FALSE)
+    writeData(wb = wb, sheet = sheet.means, foo.list$tib.dn, rowNames = FALSE, startRow = 3 + dim(foo.list$tib.ds)[1])
   }
   else
   {
@@ -210,13 +234,15 @@ write.means <- function(foo.list, data, typ, i)
     sheet.error <- "errors"
     sheet.coef <- "coefs"
     sheet.infcrit <-"infcrit"
+    sheet.means <-"means"
+    
   }
   
   writeData(wb = wb, sheet = sheet.rf.real, cbind(df.whole.pred.vol, df.whole.pred.k), rowNames = FALSE, startCol = ((i * 4) - 2))
   writeData(wb = wb, sheet = sheet.rf.rest, df.rest.pred, rowNames = FALSE, startCol = i*2)
   writeData(wb = wb, sheet = sheet.error, errors.whole.predicted, rowNames = FALSE, startCol = i + 1)
   writeData(wb = wb, sheet = sheet.infcrit, infcrit, rowNames = FALSE, startCol = i + 1)
-  writeData(wb = wb, sheet = sheet.coef, coef.pval, rowNames = TRUE, startCol = i*2)
+  writeData(wb = wb, sheet = sheet.coef, coef.pval, rowNames = FALSE, startCol = i*3-2)
   
   saveWorkbook(wb, file = file.path(getwd(), "files", paste0("pred_means_", as.character(typ), ".xlsx")), overwrite = TRUE)
 }

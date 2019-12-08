@@ -25,11 +25,34 @@ data.zeros <- function(df, n.start = 6, n.stop = dim(df)[2])
   
   for(n in d)
   {
-    index <- which(df[, n] == 0)
+    index <- which(df2[, n] == 0)
+    
+
+    if(length(which(1:7 %in% index)) == 7)
+    {
+      if (index[1] == 1) {
+        i <- 2
+        ind2 <- c(1, 2)
+        
+        while (index[i] - index[i-1] == 1) 
+        {
+          i <- i + 1
+          ind2 <- c(ind2, i)
+        }
+        ind2 <- ind2[-length(ind2)]
+        index <- index[!(index%in%ind2)]
+      }
+    }
+    else
+    {
+      ind2 <- NULL
+    }
+    
+
     
     zeros <- df$nrdnia[index]
     
-    dd <- df[-index, ] %>%
+    dd <- df2[-index, ] %>%
       select(nrdnia, names(.)[n]) %>%
       group_by(nrdnia) %>%
       summarise_at(.vars = colnames(.)[2] , mean)
@@ -51,30 +74,37 @@ dummies <- function(data, type = "")
     aa <- data %>%
       select(dni_specjalne)
     
+    len <- length(sort(unique(aa)[, 1])) - 1 
+    
+    
     d.norm <- which(aa == 0)
     d.spec <- which(aa != 0)
     
     d <- as.factor(data$nrdnia)
     d <- dummy_cols(d)
     
-    aaa <- cbind(d, ds1 = NA, ds2 = NA, ds3 = NA, ds4 = NA, ds5 = NA, ds6 = NA, ds7 = NA, ds8 = NA)
+    df <- as.data.frame(matrix(NA, nrow = dim(data)[1], ncol = len))
+    colnames(df) <- paste0("ds", 1:len)
+    
+    aaa <- cbind(d, df)
+    aaa <- aaa[, -c(1:2)]
     
     ds <- as.factor(data$dni_specjalne)
     ds <- dummy_cols(ds)
     ds <- ds[, -c(1:2)]
     
-    aaa[which(data2$key %in% d.norm), 9:length(aaa)] <- 0
-    aaa[which(data2$key %in% d.spec), 9:length(aaa)] <- ds[which(data2$key %in% d.spec), ]
-    aaa[which(data2$key %in% d.spec), 2:8] <- 0
-    aaa <- aaa[, -c(1:2)]
-    colnames(aaa) <- c("wt", "sr", "czw", "pt", "sb", "nd", paste0("ds", 1:8))
+    aaa[which(data2$key %in% d.norm), 7:length(aaa)] <- 0
+    aaa[which(data2$key %in% d.spec), 7:length(aaa)] <- ds[which(data2$key %in% d.spec), ]
+    aaa[which(data2$key %in% d.spec), 1:6] <- 0
+    
+    colnames(aaa) <- c("wt", "sr", "czw", "pt", "sb", "nd", paste0("ds", 1:len))
   }
   else if (type == "ds")
   {
     aaa <- as.factor(data$dni_specjalne)
     aaa <- dummy_cols(aaa)
     aaa <- aaa[, -c(1:2)]
-    colnames(aaa) <- paste0("ds", 1:8)
+    colnames(aaa) <- paste0("ds", 1:length(aaa))
   }
   return(aaa)
 }
@@ -86,6 +116,8 @@ ds78 <- function(data)
       filter(day(data) == c(1) | day(data) == c(10)) %>%
       pull(key)
     
+    p2 <- max(unique(data$dni_specjalne))+2
+    p1 <- max(unique(data$dni_specjalne))+1
     for (x in days.10)
     {
       day <- as.POSIXlt(data$data[x])$wday
@@ -94,7 +126,7 @@ ds78 <- function(data)
       
       if(month.day == 10)
       {
-        p <- 8
+        p <- p2
         
         # for (x in days.10)
         # {
@@ -115,7 +147,7 @@ ds78 <- function(data)
       }
       else if(month.day == 1)
       {
-        p <- 7
+        p <- p1
         
         # for (x in days.10)
         # {
@@ -141,7 +173,7 @@ ds78 <- function(data)
 data2 <- data.zeros(data)
 dns <- dummies(data2, type = "dns")
 ds <- dummies(data2, type = "ds")
-plots(data2)
+# plots(data2)
 # a <- 10
 # day <- as.POSIXlt(data2$data[a])$wday
 # 
