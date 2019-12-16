@@ -1,20 +1,24 @@
 #jeżeli wartość poniższej zmiennej będzie ustawiona na FALSE to efekty nie zostaną uwzględnione
 #TRUE to uwzględnienie efektóW dnia pierwszego i ostatniego
-efekt.d1.d10 <- FALSE #TRUE
+#TO TRZEBA USTAWIĆ
+efekt.d1.d10 <- TRUE #TRUE
+###
+
 source("files.R")
+#ile dni do pgrognozowania
 
 s1 <- seq(7, dim(data2)[2], by = 6)
 s2 <- seq(8, dim(data2)[2], by = 6)
-i <- 1
-n <- 14
-start <- "2010-01-01"
-end <- "2010-06-30"
 
+#TO MOŻNA EDYTOWAĆ
+n <- 14
 s1 <- s1[1]
 s2 <- s2[1]
+start <- "2010-01-01"
+end <- "2010-06-30"
+###
 
-
-
+i <- 1
 for (x in s1) 
 {
   a <- selfarima.means(data2, start.date = start, end.date = end, nr = x, type = "simple", n = n, seas = TRUE)
