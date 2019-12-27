@@ -68,13 +68,13 @@ selfarima.means <- function(data, start.date = "2010-01-01", end.date = "2012-12
     
     e1 <- sapply(d1, function(x)
     {
-      tib.dn[tib.dn$daytype == x, -1]
+      tib.dn[tib.dn[, 1] == x, -1]
     })
     e1 <- t(e1)
     
     e2 <- sapply(d2, function(x)
     {
-      tib.ds[tib.ds$daytype == x, -1]
+      tib.ds[tib.ds[, 1] == x, -1]
     })
     e2 <- t(e2)
     
