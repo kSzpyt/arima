@@ -76,12 +76,13 @@ selfarima.means <- function(data, start.date = "2010-01-01", end.date = "2012-12
     {
       tib.ds[tib.ds[, 1] == x, -1]
     })
-    e2 <- t(e2)
+    
+    if (length(e2 > 0)) e2 <- t(e2)
     
     f1 <- rep(NA, length(xxx))
     
     f1[b1] <- as.numeric(e1[, nr %/% 6])
-    f1[b2] <- as.numeric(e2[, nr %/% 6])
+    if (length(e2 > 0)) f1[b2] <- as.numeric(e2[, nr %/% 6])
     
     # pred.whole <- f1*vol.pred.list$fcast
     return(f1)
@@ -114,7 +115,7 @@ write.means <- function(foo.list, data, typ, i)
   rownames(infcrit) <- c("aic", "aicc", "bic")
   colnames(infcrit) <- nam
   #####################################################################################
-  errors.res.fitted <- t(as.data.frame(err(foo.list$plis$model$fitted, foo.list$plis$res)))#modelowanie
+  errors.res.fitted <- t(as.data.frame(err(foo.list$plis$res, foo.list$plis$model$fitted)))#modelowanie
   
   errors.whole.predicted <- t(as.data.frame(err(foo.list$raw.k[foo.list$plis$pred.wind], foo.list$pred.k)))#prognoza
   

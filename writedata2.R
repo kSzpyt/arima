@@ -6,7 +6,7 @@ df.xl.write2 <- function(foo.list, data, typ, i, log)
   rownames(infcrit) <- c("aic", "aicc", "bic")
   colnames(infcrit) <- nam
   #####################################################################################
-  errors.res.fitted <- t(as.data.frame(err(foo.list$model$fitted, foo.list$res)))#modelowanie
+  errors.res.fitted <- t(as.data.frame(err(foo.list$res, foo.list$model$fitted)))#modelowanie
 
   errors.whole.predicted <- t(as.data.frame(err(data[foo.list$pred.wind, foo.list$nr], foo.list$fcast)))#prognoza
   

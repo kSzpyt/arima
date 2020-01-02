@@ -23,9 +23,14 @@ cft <- function(model, data)
   {
     ind <- which(rownames(ct.df) == "wt")
     
-    h1 <- ct.df[1:(ind - 1), ]
-    h2 <- ct.df[ind:dim(ct.df)[1], ]
-    ct.df <- rbind(h2, h1)
+    if (ind != 1) 
+    {
+      h1 <- ct.df[1:(ind - 1), ]
+      h2 <- ct.df[ind:dim(ct.df)[1], ]
+      ct.df <- rbind(h2, h1)
+    }
+    
+    
   }
   else if(!("wt" %in% rownames(ct.df)) & "ds1" %in% rownames(ct.df))
   {

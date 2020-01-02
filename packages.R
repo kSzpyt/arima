@@ -1,4 +1,4 @@
-load.lib<-c("readxl", "plyr", "fastDummies","forecast","ggplot2","lmtest",
+load.lib<-c("bsts", "readxl", "plyr", "fastDummies","forecast","ggplot2","lmtest",
             "gridExtra","forecast","openxlsx","dplyr","lattice", 'stringr', 
             "data.table", "TSA", "tseries", "dygraphs", "car", "lubridate")
 

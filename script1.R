@@ -1,3 +1,4 @@
+
 # library(readxl)
 # library(dplyr)
 # library(fastDummies)
@@ -10,7 +11,7 @@
 data <- read_xlsx("dane.xlsx")
 
 #funkcja do usuwania zer
-data.zeros <- function(df, n.start = 6, n.stop = dim(df)[2], efekty = TRUE)
+data.zeros <- function(df, n.start = 6, n.stop = dim(df)[2], efekty = NULL)
 {
   unlink(file.path(getwd(), "files"), recursive = TRUE)
   unlink(file.path(getwd(), "plots"), recursive = TRUE)
@@ -27,7 +28,7 @@ data.zeros <- function(df, n.start = 6, n.stop = dim(df)[2], efekty = TRUE)
   {
     index <- which(df2[, n] == 0)
     
-
+    
     if(length(which(1:7 %in% index)) == 7)
     {
       if (index[1] == 1) {
@@ -48,7 +49,7 @@ data.zeros <- function(df, n.start = 6, n.stop = dim(df)[2], efekty = TRUE)
       ind2 <- NULL
     }
     
-
+    
     
     zeros <- df$nrdnia[index]
     
@@ -63,9 +64,9 @@ data.zeros <- function(df, n.start = 6, n.stop = dim(df)[2], efekty = TRUE)
   }
   df3 <- cbind("key" = as.numeric(rownames(df2)), df2)
   
-  if(efekty == TRUE)
+  if(!is.null(efekty))
   {
-    df3 <- ds78(df3)
+    df3 <- ds78(df3, efekty)
   }
   
   return(df3)
@@ -113,65 +114,71 @@ dummies <- function(data, type = "")
   return(aaa)
 }
 
-ds78 <- function(data)
+ds78 <- function(data, atr = C(1, 1, 1))
 {
-    days.10 <- data %>%
-      select(key, data) %>%
-      filter(day(data) == c(1) | day(data) == c(10)) %>%
-      pull(key)
+  days.10 <- data %>%
+    select(key, data) %>%
+    filter(day(data) == c(1) | day(data) == c(10)) %>%
+    pull(key)
+  
+  p2 <- max(unique(data$dni_specjalne))+2
+  p1 <- max(unique(data$dni_specjalne))+1
+  p3 <- max(unique(data$dni_specjalne))+3
+  
+  for (x in data$key)
+  {
+    day <- as.POSIXlt(data$data[x])$wday
+    daytype <- data$dni_specjalne[x]
+    month.day <- data$Dzien[x]
     
-    p2 <- max(unique(data$dni_specjalne))+2
-    p1 <- max(unique(data$dni_specjalne))+1
-    for (x in days.10)
+    if(month.day == 10 & atr[2] == 1)
     {
-      day <- as.POSIXlt(data$data[x])$wday
-      daytype <- data$dni_specjalne[x]
-      month.day <- data$Dzien[x]
+      p <- p2
       
-      if(month.day == 10)
+      i <- 0
+      while (day == 0 | day == 6 | daytype == 1) 
       {
-        p <- p2
-        
-        # for (x in days.10)
-        # {
-        # x <- which(data$key == x$key)
-        # day <- as.POSIXlt(data$data[x])$wday
-        # daytype <- data$dni_specjalne[x]
-        
-        i <- 0
-        while (day == 0 | day == 6 | daytype == 1) 
-        {
-          i <- i + 1
-          day <- as.POSIXlt(data$data[x - i])$wday
-          daytype <- data$dni_specjalne[x - i]
-        }
-        
-        data$dni_specjalne[x - i] <- p
-        # }
+        i <- i + 1
+        day <- as.POSIXlt(data$data[x - i])$wday
+        daytype <- data$dni_specjalne[x - i]
       }
-      else if(month.day == 1)
-      {
-        p <- p1
-        
-        # for (x in days.10)
-        # {
-        # x <- which(data$key == x$key)
-        # day <- as.POSIXlt(data$data[x])$wday
-        # daytype <- data$dni_specjalne[x]
-        
-        i <- 0
-        while (day == 0 | day == 6 | daytype == 1) 
-        {
-          i <- i + 1
-          day <- as.POSIXlt(data$data[x + i])$wday
-          daytype <- data$dni_specjalne[x + i]
-        }
-        
-        data$dni_specjalne[x + i] <- p
-        # }
-        
-      }
+      
+      data$dni_specjalne[x - i] <- p
+      # }
     }
+    else if(month.day == 1 & atr[1] == 1)
+    {
+      p <- p1
+      
+      
+      i <- 0
+      while (day == 0 | day == 6 | daytype == 1) 
+      {
+        i <- i + 1
+        day <- as.POSIXlt(data$data[x + i])$wday
+        daytype <- data$dni_specjalne[x + i]
+      }
+      
+      data$dni_specjalne[x + i] <- p
+      # }
+      
+    }
+    else if(data$data[x] == LastDayInMonth(data$data[x]) & atr[3] == 1)
+    {
+      p <- p3
+      
+      
+      i <- 0
+      while (day == 0 | day == 6 | daytype == 1) 
+      {
+        i <- i + 1
+        day <- as.POSIXlt(data$data[x - i])$wday
+        daytype <- data$dni_specjalne[x - i]
+      }
+      
+      data$dni_specjalne[x - i] <- p
+    }
+  }
   return(data)
 }
 data2 <- data.zeros(data, efekty = efekt.d1.d10)
@@ -185,3 +192,4 @@ ds <- dummies(data2, type = "ds")
 #   select(key, data) %>%
 #   filter(day(data) == 10) %>%
 #   pull(key)
+
