@@ -1,9 +1,10 @@
 #TO TRZEBA USTAWIĆ
 #pierwszy / dziesiąty / ostatni dzień miesiąca
 #  0/1    /    0/1    /       0/1
-efekt.d1.d10 <- c(1, 1, 1) #TRUE
+efekt.d1.d10 <- c(0, 0, 0) #TRUE
 ###
 #to trzeba uruchomić
+max.percentage <- 0.1
 source("files.R")
 #w razie błędu spróbować uruchomić poniższą linijkę kodu (odkomentarzować) i ponownie uruchomić 'source("files.R")'
 # install.packages("minpack.lm_1.2-1.tar.gz", repos = NULL)
@@ -26,25 +27,25 @@ n <- 14
 s1 <- s1[1]
 s2 <- s2[1]
 #data początku i końca modelowania- n dni prognozy będzie po dacie "end"
-start <- "2010-01-01"
-end <- "2010-12-31"
+start <- "2018-01-01"
+end <- "2019-11-30"
 ###
 
 #wszystko poniżej uruchomić
-i <- 1
-for (x in s1)
-{
-  a <- selfarima.means(data2, start.date = start, end.date = end, nr = x, type = "simple", n = n, seas = TRUE)
-  write.means(a, data2, typ = "simple", i = i, data.nas = data3, nr = x)
-  
-  b <- selfarima.means(data2, start.date = start, end.date = end, nr = x, type = "xreg", xr = as.matrix(ds), n = n, seas = TRUE)
-  write.means(b, data2, typ = "xreg_ds", i = i, data.nas = data3, nr = x)
-  
-  c <- selfarima.means(data2, start.date = start, end.date = end, nr = x, type = "xreg", xr = as.matrix(dns), n = n, seas = FALSE)
-  write.means(c, data2, typ = "xreg_dns", i = i, data.nas = data3, nr = x)
-  
-  i <- i + 1
-}
+# i <- 1
+# for (x in s1)
+# {
+#   a <- selfarima.means(data2, start.date = start, end.date = end, nr = x, type = "simple", n = n, seas = TRUE)
+#   write.means(a, data2, typ = "simple", i = i, data.nas = data3, nr = x)
+#   
+#   b <- selfarima.means(data2, start.date = start, end.date = end, nr = x, type = "xreg", xr = as.matrix(ds), n = n, seas = TRUE)
+#   write.means(b, data2, typ = "xreg_ds", i = i, data.nas = data3, nr = x)
+#   
+#   c <- selfarima.means(data2, start.date = start, end.date = end, nr = x, type = "xreg", xr = as.matrix(dns), n = n, seas = FALSE)
+#   write.means(c, data2, typ = "xreg_dns", i = i, data.nas = data3, nr = x)
+#   
+#   i <- i + 1
+# }
 
 i <- 1
 for (x in s2) 
@@ -59,6 +60,6 @@ for (x in s2)
   
   i <- i + 1
 }
-
+#547
 
 #zerowe dni specjalne

@@ -1,5 +1,5 @@
 data <- read_xlsx("dane.xlsx")
-data.original <- data
+# data.original <- data
 
 data.foo <- function(df, n.start = 6, n.stop = dim(df)[2], efekty = NULL, max.percentage = 0.1)
 {
@@ -192,17 +192,17 @@ ds78 <- function(data, atr = C(1, 1, 1))
   return(data)
 }
 
-data2 <- data.foo(data, efekty = c(1, 1, 1))$df.nas
-data3 <- data.foo(data, efekty = c(1, 1, 1))$df.non.nas
+data2 <- data.foo(data, efekty = efekt.d1.d10, max.percentage = max.percentage)$df.nas
+data3 <- data.foo(data, efekty = efekt.d1.d10, max.percentage = max.percentage)$df.non.nas
 
-summary(data2[, 7])
-summary(data3[, 7])
+# summary(data2[, 7])
+# summary(data3[, 7])
 
 dns <- dummies(data2, type = "dns")
 ds <- dummies(data2, type = "ds")
 
 
-
+# summary(data$dni_specjalne)
 
 
 
