@@ -53,13 +53,13 @@ data.foo <- function(df, n.start = 6, n.stop = dim(df)[2], efekty = NULL, max.pe
     
     means <- pull(dd[, 2])
     
-    df3[ind2, n] <- NA
+    df3[c(index, ind2), n] <- NA
 
     ds <- sort(unique(df2$dni_specjalne))
     
     for (i in (ds + 1)) 
     {
-      inx.below.mean <- df2[-index, ]  %>% 
+      inx.below.mean <- df2[-c(index, ind2), ]  %>% 
         filter(dni_specjalne == i - 1) %>%
         select(key, names(.)[n]) %>%
         filter_at(2, all_vars(. < means[i]))
@@ -75,6 +75,8 @@ data.foo <- function(df, n.start = 6, n.stop = dim(df)[2], efekty = NULL, max.pe
       df2[na.inx, n] <- NA
       
     }
+    
+    df2[c(index, ind2), n] <- NA
     
   }
   return(list(df.nas = df2, df.non.nas = df3))

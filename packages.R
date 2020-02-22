@@ -8,5 +8,5 @@ for(lib in install.lib) install.packages(lib,dependencies=TRUE)
 sapply(load.lib,require,character=TRUE)
 
 
-install.packages("minpack.lm_1.2-1.tar.gz", repos = NULL)
+# install.packages("minpack.lm_1.2-1.tar.gz", repos = NULL)
 library(minpack.lm)

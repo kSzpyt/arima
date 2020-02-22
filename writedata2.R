@@ -1,4 +1,4 @@
-df.xl.write2 <- function(foo.list, data, typ, i, log)
+df.xl.write2 <- function(foo.list, data, typ, i, log, data.nas)
 {
   nam <- colnames(data)[foo.list$nr]
   #####################################################################################
@@ -8,7 +8,7 @@ df.xl.write2 <- function(foo.list, data, typ, i, log)
   #####################################################################################
   errors.res.fitted <- t(as.data.frame(err(foo.list$res, foo.list$model$fitted)))#modelowanie
 
-  errors.whole.predicted <- t(as.data.frame(err(data[foo.list$pred.wind, foo.list$nr], foo.list$fcast)))#prognoza
+  errors.whole.predicted <- t(as.data.frame(err(data.nas[foo.list$pred.wind, foo.list$nr], foo.list$fcast)))#prognoza
   
   colnames(errors.res.fitted) <- nam
   colnames(errors.whole.predicted) <- nam
@@ -114,7 +114,7 @@ df.xl.write2 <- function(foo.list, data, typ, i, log)
     
     writeData(wb = wb, sheet = sheet.rf.real, data.frame("data" = data$data), rowNames = FALSE, startCol = 1)
     writeData(wb = wb, sheet = sheet.rf.rest, data.frame("data" = data$data), rowNames = FALSE, startCol = 1)
-    writeData(wb = wb, sheet = sheet.error, data.frame("names" = rownames(errors.res.fitted)), rowNames = FALSE, startCol = 1)
+    writeData(wb = wb, sheet = sheet.error, data.frame("names" = rownames(errors.whole.predicted)), rowNames = FALSE, startCol = 1)
     writeData(wb = wb, sheet = sheet.infcrit, data.frame("names" = rownames(infcrit)), rowNames = FALSE, startCol = 1)
     # writeData(wb = wb, sheet = sheet.coef, data.frame("names" = rownames(ct)), rowNames = FALSE, startCol = 1)
     

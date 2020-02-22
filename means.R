@@ -4,7 +4,7 @@ tibb.dn.dns <- function(data)
     select(nrdnia, dni_specjalne, ends_with("_v"), ends_with("_k")) %>%
     filter(dni_specjalne == 0) %>%
     group_by(nrdnia) %>%
-    summarise_at(vars(-dni_specjalne), sum)
+    summarise_at(vars(-dni_specjalne), sum, na.rm = TRUE)
   
   # names.dn <- (tib.dn$nrdnia)
   
@@ -12,7 +12,7 @@ tibb.dn.dns <- function(data)
     select(nrdnia, dni_specjalne, ends_with("_v"), ends_with("_k")) %>%
     filter(dni_specjalne != 0) %>%
     group_by(dni_specjalne) %>%
-    summarise_at(vars(-nrdnia), sum)
+    summarise_at(vars(-nrdnia), sum, na.rm = TRUE)
   
   
   # names.ds <- (tib.ds$dni_specjalne)
@@ -107,7 +107,7 @@ selfarima.means <- function(data, start.date = "2010-01-01", end.date = "2012-12
 
 
 
-write.means <- function(foo.list, data, typ, i)
+write.means <- function(foo.list, data, typ, i, data.nas, nr)
 {
   nam <- colnames(data)[foo.list$plis$nr]
   #####################################################################################
@@ -117,7 +117,7 @@ write.means <- function(foo.list, data, typ, i)
   #####################################################################################
   errors.res.fitted <- t(as.data.frame(err(foo.list$plis$res, foo.list$plis$model$fitted)))#modelowanie
   
-  errors.whole.predicted <- t(as.data.frame(err(foo.list$raw.k[foo.list$plis$pred.wind], foo.list$pred.k)))#prognoza
+  errors.whole.predicted <- t(as.data.frame(err(data.nas[foo.list$plis$pred.wind, nr], foo.list$pred.k)))#prognoza
   
   colnames(errors.res.fitted) <- nam
   colnames(errors.whole.predicted) <- nam
@@ -250,9 +250,4 @@ write.means <- function(foo.list, data, typ, i)
 
 
 
-# aaa <- selfarima.means(data2, start.date = "2010-03-01", end.date = "2012-02-29", nr = 7, type = "xreg", xr = as.matrix(ds), n = 14, seas = TRUE)
 
-# plot(aaa$raw.k[aaa$plis$wind], type = "l")
-# lines(aaa$pred.k, col = "red")
-
-# write.means(aaa, data2, typ = "TEST", i = 1)
