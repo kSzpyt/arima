@@ -27,7 +27,7 @@ data.foo <- function(df, n.start = 6, n.stop = dim(df)[2], efekty = NULL, max.pe
         i <- 2
         ind2 <- c(1, 2)
         
-        while (index[i] - index[i-1] == 1) 
+        while (index[i] - index[i-1] == 1 & i <= length(index)) 
         {
           i <- i + 1
           ind2 <- c(ind2, i)
@@ -84,44 +84,54 @@ data.foo <- function(df, n.start = 6, n.stop = dim(df)[2], efekty = NULL, max.pe
 
 dummies <- function(data, type = "")
 {
-  if(type == "dns")
+  aa <- data %>%
+    select(dni_specjalne) %>% pull()
+  
+  if(length(unique(aa)) == 1) return(NULL)
+  else
   {
-    aa <- data %>%
-      select(dni_specjalne)
-    
-    len <- length(sort(unique(aa)[, 1])) - 1 
-    
-    
-    d.norm <- which(aa == 0)
-    d.spec <- which(aa != 0)
-    
-    d <- as.factor(data$nrdnia)
-    d <- dummy_cols(d)
-    
-    df <- as.data.frame(matrix(NA, nrow = dim(data)[1], ncol = len))
-    colnames(df) <- paste0("ds", 1:len)
-    
-    aaa <- cbind(d, df)
-    aaa <- aaa[, -c(1:2)]
-    
-    ds <- as.factor(data$dni_specjalne)
-    ds <- dummy_cols(ds)
-    ds <- ds[, -c(1:2)]
-    
-    aaa[which(data2$key %in% d.norm), 7:length(aaa)] <- 0
-    aaa[which(data2$key %in% d.spec), 7:length(aaa)] <- ds[which(data2$key %in% d.spec), ]
-    aaa[which(data2$key %in% d.spec), 1:6] <- 0
-    
-    colnames(aaa) <- c("wt", "sr", "czw", "pt", "sb", "nd", paste0("ds", 1:len))
+    if(type == "dns")
+    {
+      aa <- data %>%
+        select(dni_specjalne)
+      
+      len <- length(sort(unique(aa)[, 1])) - 1 
+      
+      
+      d.norm <- which(aa == 0)
+      d.spec <- which(aa != 0)
+      
+      d <- as.factor(data$nrdnia)
+      d <- dummy_cols(d)
+      
+      df <- as.data.frame(matrix(NA, nrow = dim(data)[1], ncol = len))
+      colnames(df) <- paste0("ds", 1:len)
+      
+      aaa <- cbind(d, df)
+      aaa <- aaa[, -c(1:2)]
+      
+      ds <- as.factor(data$dni_specjalne)
+      ds <- dummy_cols(ds)
+      ds <- ds[, -c(1:2)]
+      
+      aaa[which(data2$key %in% d.norm), 7:length(aaa)] <- 0
+      aaa[which(data2$key %in% d.spec), 7:length(aaa)] <- ds[which(data2$key %in% d.spec), ]
+      aaa[which(data2$key %in% d.spec), 1:6] <- 0
+      
+      colnames(aaa) <- c("wt", "sr", "czw", "pt", "sb", "nd", paste0("ds", 1:len))
+    }
+    else if (type == "ds")
+    {
+      aaa <- as.factor(data$dni_specjalne)
+      aaa <- dummy_cols(aaa)
+      aaa <- aaa[, -c(1:2)]
+      colnames(aaa) <- paste0("ds", 1:length(aaa))
+    }
+    return(aaa)
   }
-  else if (type == "ds")
-  {
-    aaa <- as.factor(data$dni_specjalne)
-    aaa <- dummy_cols(aaa)
-    aaa <- aaa[, -c(1:2)]
-    colnames(aaa) <- paste0("ds", 1:length(aaa))
-  }
-  return(aaa)
+  
+  
+  
 }
 
 ds78 <- function(data, atr = C(1, 1, 1))

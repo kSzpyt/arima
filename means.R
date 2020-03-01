@@ -1,7 +1,7 @@
 tibb.dn.dns <- function(data)
 {
   tib.dn <- data %>%
-    select(nrdnia, dni_specjalne, ends_with("_v"), ends_with("_k")) %>%
+    select(nrdnia, dni_specjalne, ends_with("v"), ends_with("w")) %>%
     filter(dni_specjalne == 0) %>%
     group_by(nrdnia) %>%
     summarise_at(vars(-dni_specjalne), sum, na.rm = TRUE)
@@ -9,7 +9,7 @@ tibb.dn.dns <- function(data)
   # names.dn <- (tib.dn$nrdnia)
   
   tib.ds <- data %>%
-    select(nrdnia, dni_specjalne, ends_with("_v"), ends_with("_k")) %>%
+    select(nrdnia, dni_specjalne, ends_with("v"), ends_with("w")) %>%
     filter(dni_specjalne != 0) %>%
     group_by(dni_specjalne) %>%
     summarise_at(vars(-nrdnia), sum, na.rm = TRUE)
@@ -44,10 +44,10 @@ tibb.dn.dns <- function(data)
 }
 
 selfarima.means <- function(data, start.date = "2010-01-01", end.date = "2012-12-31", nr = 7, n = 7,
-         type = "simple", xr = NULL, typ = NULL, i, seas = TRUE)
+         type = "simple", xr = NULL, typ = NULL, i, seas = TRUE, log = FALSE)
 {
   vol.pred.list <-  selfarima2(data, start.date = start.date, end.date = end.date, nr = nr, 
-                               result.save = FALSE, i = i, type = type, xr = xr, n = n, seas = seas, log = FALSE)
+                               result.save = FALSE, i = i, type = type, xr = xr, n = n, seas = seas, log = log)
   
   tib.dn <- tibb.dn.dns(data)$tib.dn
   
@@ -90,6 +90,9 @@ selfarima.means <- function(data, start.date = "2010-01-01", end.date = "2012-12
   
   pred.whole <- foo(vol.pred.list$pred.wind, tib.dn, tib.ds)*vol.pred.list$fcast # podać jak się module dla K
   
+  # dat2 <- na.omit(data[vol.pred.list$wind, vol.pred.list$nr])
+  # vol.pred.list$model$fitted <- self.add.NAs(data[vol.pred.list$wind, vol.pred.list$nr], vol.pred.list$model$fitted)
+
   fit.whole <- foo(vol.pred.list$wind, tib.dn, tib.ds)*(vol.pred.list$model$fitted + vol.pred.list$trend)
   
   # f2 <- rep(NA, length(vol.pred.list$fcast))
@@ -117,7 +120,7 @@ write.means <- function(foo.list, data, typ, i, data.nas, nr)
   #####################################################################################
   errors.res.fitted <- t(as.data.frame(err(foo.list$plis$res, foo.list$plis$model$fitted)))#modelowanie
   
-  errors.whole.predicted <- t(as.data.frame(err(data.nas[foo.list$plis$pred.wind, nr], foo.list$pred.k)))#prognoza
+  errors.whole.predicted <- t(as.data.frame(err(data.nas[foo.list$plis$pred.wind, (nr + 1)], foo.list$pred.k)))#prognoza
   
   colnames(errors.res.fitted) <- nam
   colnames(errors.whole.predicted) <- nam

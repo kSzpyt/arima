@@ -1,4 +1,4 @@
-library(car)
+# library(car)
 logistic.trend <- function(data, nr = 7, wind = NULL, n = 7, log = FALSE, log.rev = FALSE)
 {
   if(is.null(wind)) wind <- data$key
@@ -9,24 +9,56 @@ logistic.trend <- function(data, nr = 7, wind = NULL, n = 7, log = FALSE, log.re
   {
     dat <- log(dat)
   }
-  coefs <- coef(lm(logit(dat/max(dat)) ~ wind))
+  dat2 <- na.omit(dat)
+  if(!is.null(na.action(dat2)))
+  {
+    ex <- na.action(dat2)
+    wind2 <- wind[-ex]
+    coefs <- coef(lm(logit(dat2/max(dat2)) ~ wind2))
+  }
+  else
+  {
+    wind2 <- wind
+    coefs <- coef(lm(logit(dat2/max(dat2)) ~ wind2))
+  }
   
   model <- nlsLM(dat ~ phi1/(1+exp(-(phi2+phi3*wind))), 
-              start = list(phi1 = max(dat), phi2 = coefs[1], phi3 = coefs[2]), data = data, trace=TRUE)
+              start = list(phi1 = max(dat, na.rm = TRUE), phi2 = coefs[1], phi3 = coefs[2]), data = data, trace=TRUE)
   
   phi1 <- coef(model)[1]
   phi2 <- coef(model)[2]
   phi3 <- coef(model)[3]
   
-  trend <- phi1/(1 + exp(-(phi2 + phi3 * wind))) 
+  # index <- which(is.na(dat))
+  # 
+  # if (index[1] == 1) {
+  #   i <- 2
+  #   ind2 <- c(1, 2)
+  #   
+  #   while (index[i] - index[i-1] == 1 & i <= length(index)) 
+  #   {
+  #     i <- i + 1
+  #     ind2 <- c(ind2, i)
+  #   }
+  #   #ciąg zer -> zamiana na NA
+  #   ind2 <- ind2[-length(ind2)]
+  #   # df2[ind2, n] <- NA
+  #   #index- index zer niepoczątkowych
+  #   index <- index[!(index%in%ind2)]
+  #   # df2[index, n] <- NA
+  # }
+  # wind3 <- wind[-ind2]
+  wind3 <- wind
+  
+  trend <- phi1/(1 + exp(-(phi2 + phi3 * wind3))) 
   if(log.rev == TRUE)
   {
     trend <- exp(trend)
   }
   
-  res <- data.frame(x = wind, fit = trend)
+  res <- data.frame(x = wind3, fit = trend)
   
-  len <- wind[length(wind)] + 1
+  len <- wind3[length(wind3)] + 1
   pred.trend <- phi1/(1 + exp(-(phi2 + phi3 * (len:(len+n-1) ))))
   
   if(log.rev == TRUE)

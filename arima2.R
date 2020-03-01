@@ -5,8 +5,8 @@ selfarima2 <- function(data, start.date = "2010-01-01", end.date = "2012-12-31",
   start.date <- as.POSIXct(start.date, tz = "UTC", format = c("%Y-%m-%d"))
   end.date <- as.POSIXct(end.date, tz = "UTC", format = c("%Y-%m-%d"))
   wind <- which(data$data == start.date):which(data$data == end.date)
-  ex <- which(0 != data[wind, nr])
-  wind <- wind[ex]
+  ex <- first.n.zeros(data[wind, nr])
+  if(length(ex) != 0) wind <- wind[-ex]
   
   startW <- as.numeric(strftime(head(data$data[wind], 1), format = "%W"))
   startD <- as.numeric(strftime(head(data$data[wind], 1) + 1, format =" %w"))
