@@ -64,7 +64,6 @@ for (x in s1)
   i <- i + 1
 }
 
-beep()
 
 y <- 0
 j <- 1
@@ -86,5 +85,7 @@ for (x in s2)
 
   j <- j + 1
 }
+beep()
+
 #547
 #zerowe dni specjalne
