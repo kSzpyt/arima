@@ -208,8 +208,8 @@ data3 <- data.foo(data, efekty = efekt.d1.d10, max.percentage = max.percentage)$
 # summary(data2[, 7])
 # summary(data3[, 7])
 
-dns <- dummies(data2, type = "dns")
-ds <- dummies(data2, type = "ds")
+# dns <- dummies(data2, type = "dns")
+# ds <- dummies(data2, type = "ds")
 
 
 # summary(data$dni_specjalne)

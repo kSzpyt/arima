@@ -42,7 +42,7 @@ df.xl.write2 <- function(foo.list, data, typ, i, log, data.nas)
     
     #PREDICTED
     df.whole.pred <- data.frame(rep(0, dim(data)[1]), rep(0, dim(data)[1]))
-    df.whole.pred[foo.list$wind, ] <- data.frame(exp(foo.list$dat), exp(foo.list$model$fitted+foo.list$trend))
+    # df.whole.pred[foo.list$wind, ] <- data.frame(exp(foo.list$dat), exp(foo.list$model$fitted+foo.list$trend))
     df.whole.pred[foo.list$pred.wind, ] <- data.frame(as.numeric(data[foo.list$pred.wind, foo.list$nr]), as.numeric(foo.list$fcast))
     colnames(df.whole.pred) <- c(paste0("real_", nam), paste0("fitted_", nam))
   }
@@ -55,7 +55,7 @@ df.xl.write2 <- function(foo.list, data, typ, i, log, data.nas)
     
     #PREDICTED
     df.whole.pred <- data.frame(rep(0, dim(data)[1]), rep(0, dim(data)[1]))
-    df.whole.pred[foo.list$wind, ] <- data.frame(as.numeric(foo.list$dat), as.numeric(foo.list$model$fitted+foo.list$trend))
+    # df.whole.pred[foo.list$wind, ] <- data.frame(as.numeric(foo.list$dat), as.numeric(foo.list$model$fitted+foo.list$trend))
     df.whole.pred[foo.list$pred.wind, ] <- data.frame(as.numeric(data[foo.list$pred.wind, foo.list$nr]), as.numeric(foo.list$fcast))
     colnames(df.whole.pred) <- c(paste0("real_", nam), paste0("fitted_", nam))
   }

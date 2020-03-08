@@ -16,12 +16,20 @@ selfarima2 <- function(data, start.date = "2010-01-01", end.date = "2012-12-31",
   if(log == TRUE)
   {
     dat <- log(dat)
+    inf.val <- NULL
+    if(length(which(is.infinite(dat))) != 0)
+    {
+      inf.val <- which(is.infinite(dat))
+      dat[inf.val] <- NA
+    }
   }
   ###################################################################################
   lt <- logistic.trend(data = data, nr = nr, wind = wind, n = n, log = log)
   trend <- lt$trend
   res <- dat - trend
   ts1 <- ts(res, start = c(startW, startD), frequency = 7)
+  ts2 <- ts1
+  ts1[is.na(ts1)] <- 0 
   ###################################################################################
   if(type == "simple")
   {
@@ -34,21 +42,12 @@ selfarima2 <- function(data, start.date = "2010-01-01", end.date = "2012-12-31",
     fcast.res <- forecast(model, xreg = xr[(wind[length(wind)] + 1):(wind[length(wind)] + n), ])
   }
   ###################################################################################
-  if(log == TRUE)
-  {
-    # fcast.res$mean <- exp(fcast.res$mean)
-    # fcast.res$upper <- exp(fcast$upper)
-    # fcast.res$lower <- exp(fcast$lower)
-    # fcast.res$x <- exp(fcast$x)
-    # model$fitted <- exp(model$fitted)
-    # dat <- exp(dat)
-    # trend <- exp(trend)
-    # lt$pred.trend <- exp(lt$pred.trend)
-  }
+  
   ###################################################################################
   fcast <- lt$pred.trend + as.numeric(fcast.res$mean)
   if(log == TRUE)
   {
+    # dat <- exp(dat)
     fcast <- exp(fcast)
   }
   

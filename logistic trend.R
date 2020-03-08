@@ -8,6 +8,12 @@ logistic.trend <- function(data, nr = 7, wind = NULL, n = 7, log = FALSE, log.re
   if(log == TRUE)
   {
     dat <- log(dat)
+    inf.val <- NULL
+    if(length(which(is.infinite(dat))) != 0)
+    {
+      inf.val <- which(is.infinite(dat))
+      dat[inf.val] <- NA
+    }
   }
   dat2 <- na.omit(dat)
   if(!is.null(na.action(dat2)))
@@ -23,7 +29,7 @@ logistic.trend <- function(data, nr = 7, wind = NULL, n = 7, log = FALSE, log.re
   }
   
   model <- nlsLM(dat ~ phi1/(1+exp(-(phi2+phi3*wind))), 
-              start = list(phi1 = max(dat, na.rm = TRUE), phi2 = coefs[1], phi3 = coefs[2]), data = data, trace=TRUE)
+              start = list(phi1 = max(dat, na.rm = TRUE), phi2 = coefs[1], phi3 = coefs[2]), data = data, trace=FALSE)
   
   phi1 <- coef(model)[1]
   phi2 <- coef(model)[2]
@@ -63,8 +69,8 @@ logistic.trend <- function(data, nr = 7, wind = NULL, n = 7, log = FALSE, log.re
   
   if(log.rev == TRUE)
   {
-    pred.trend <- exp(pred.trend)
-    dat <- exp(dat)
+    pred.trend[-inf.val] <- exp(pred.trend[-inf.val])
+    dat <- exp(dat[-inf.val])
   }
   
   return(list(res = res, dat = dat, pred.trend = pred.trend, trend = trend))

@@ -21,7 +21,7 @@ s2 <- seq(8, dim(data2)[2], by = sz)
 
 
 #liczba zaprognozowanych dni
-n <- 14
+n <- 31
 #te dwie linijki kodu poniżej sprawią że uruchomi się tylko jeden, pierwszy bankomat
 # wykomentarzować żeby odpalić wszystkie bankomaty
 
@@ -30,13 +30,15 @@ n <- 14
 # data początku i końca modelowania- n dni prognozy będzie po dacie "end"
 start <- "2018-11-04"
 end <- "2019-11-03"
+# start.date <- as.POSIXct(start, tz = "UTC", format = c("%Y-%m-%d"))
+# end.date <- as.POSIXct(end, tz = "UTC", format = c("%Y-%m-%d"))
 ###
 #025, 039, 033
 #wszystko poniżej uruchomić
-z <- 0
-i <- 1
-for (x in s1)
-{
+# z <- 0
+# i <- 1
+# for (x in s1)
+# {
   # a <- selfarima.means(data2, start.date = start, end.date = end, nr = x, type = "simple", n = n, seas = TRUE)
   # write.means(a, data2, typ = "simple", i = i, data.nas = data3, nr = x)
   # z <-z+1
@@ -52,34 +54,36 @@ for (x in s1)
   # a.log <- selfarima.means(data2, start.date = start, end.date = end, nr = x, type = "simple", n = n, seas = TRUE, log = TRUE)
   # write.means(a.log, data2, typ = "simple_log", i = i, data.nas = data3, nr = x)
   # z <- z+1
-  tryCatch({
-    b.log <- selfarima.means(data2, start.date = start, end.date = end, nr = x, type = "xreg", xr = as.matrix(ds), n = n, seas = TRUE, log = TRUE)
-    write.means(b.log, data2, typ = "xreg_ds_log", i = i, data.nas = data3, nr = x)
-    z <- z+1
+  # tryCatch({
+    # b.log <- selfarima.means(data2, start.date = start, end.date = end, nr = x, type = "xreg", xr = as.matrix(ds), n = n, seas = TRUE, log = TRUE)
+    # write.means(b.log, data2, typ = "xreg_ds_log", i = i, data.nas = data3, nr = x)
+    # z <- z+1
     
-    c.log <- selfarima.means(data2, start.date = start, end.date = end, nr = x, type = "xreg", xr = as.matrix(dns), n = n, seas = FALSE, log = TRUE)
-    write.means(c.log, data2, typ = "xreg_dns_log", i = i, data.nas = data3, nr = x)
-    z <- z+1
+    # c.log <- selfarima.means(data2, start.date = start, end.date = end, nr = x, type = "xreg", xr = as.matrix(dns), n = n, seas = FALSE, log = TRUE)
+    # write.means(c.log, data2, typ = "xreg_dns_log", i = i, data.nas = data3, nr = x)
+    # z <- z+1
     
-    i <- i + 1
-  }, error = function(e){cat("ERROR :",conditionMessage(e), "\n")})
+  # }, error = function(e){cat("ERROR :", print(x), conditionMessage(e), "\n")})
 
+  # i <- i + 1
   
-}
-beep()
+# }
+# beep()
 
 y <- 0
 j <- 1
+# s2 <- s2[19]
 for (x in s2)
 {
   # selfarima2(data2, start.date = start, end.date = end, nr = x, result.save = TRUE, i = j, type = "simple", n = n, seas = TRUE, log = TRUE , typ = "simple_log", data.nas = data3)
   # y <- y+1
   tryCatch({
-    selfarima2(data2, start.date = start, end.date = end, nr = x, result.save = TRUE, i = j, type = "xreg", xr = as.matrix(ds), n = n, seas = TRUE, log = TRUE , typ = "xreg_ds_log", data.nas = data3)
+    # selfarima2(data2, start.date = start, end.date = end, nr = x, result.save = TRUE, i = j, type = "xreg", xr = as.matrix(ds), n = n, seas = TRUE, log = TRUE , typ = "xreg_ds_log", data.nas = data3)
+    # y <- y+1
+    selfarima2(data2, start.date = start, end.date = end, nr = x, result.save = TRUE, i = j, type = "xreg", 
+               xr = as.matrix(dns), n = n, seas = FALSE, log = TRUE , typ = "xreg_dns_log", data.nas = data3)
     y <- y+1
-    selfarima2(data2, start.date = start, end.date = end, nr = x, result.save = TRUE, i = j, type = "xreg", xr = as.matrix(dns), n = n, seas = FALSE, log = TRUE , typ = "xreg_dns_log", data.nas = data3)
-    y <- y+1
-  }, error = function(e){cat("ERROR :",conditionMessage(e), "\n")})
+  }, error = function(e){cat("ERROR :", print(x), conditionMessage(e), "\n"); beep()})
 
   # selfarima2(data2, start.date = start, end.date = end, nr = x, result.save = TRUE, i = j, type = "simple", n = n, seas = TRUE, log = FALSE , typ = "simple", data.nas = data3)
   # y <- y+1
