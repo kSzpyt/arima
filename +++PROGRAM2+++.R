@@ -10,7 +10,7 @@ sz <- 2
 #tak jak Pan mówił w tej chwili będą 2
 
 #tego nie trzeba ruszać
-s1 <- seq(7, dim(data2)[2], by = sz)
+# s1 <- seq(7, dim(data2)[2], by = sz)
 s2 <- seq(8, dim(data2)[2], by = sz)
 #############
 
@@ -23,7 +23,7 @@ end <- "2019-11-03"
 y <- 0
 j <- 1
 
-s2 <- seq(8, dim(data2)[2], by = sz)
+# s2 <- seq(8, dim(data2)[2], by = sz)
 # s2 <- s2[37]
 for(x in s2)
 {
