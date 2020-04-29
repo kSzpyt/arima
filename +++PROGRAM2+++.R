@@ -20,21 +20,48 @@ n <- 31
 start <- "2018-11-04"
 end <- "2019-11-03"
 
-y <- 0
 j <- 1
+ldi <- 0
 
-# s2 <- seq(8, dim(data2)[2], by = sz)
-# s2 <- s2[37]
 for(x in s2)
 {
-  tryCatch({
-    selfarima2(data2, start.date = start, end.date = end, nr = x, result.save = TRUE, i = j, type = "xreg", 
-               xr = as.matrix(dns), n = n, seas = FALSE, log = TRUE , typ = "xreg_dns_log", data.nas = data3)
-    y <- y+1
+  ldi <- ldi + 1
+  tryCatch(
+  {
+    selfarima2(data2, start.date = start, end.date = end, nr = x, result.save = TRUE, i = j, type = "simple",
+               n = n, seas = FALSE, log = TRUE , typ = "simple_log", data.nas = data3)
   }, error = function(e){cat("ERROR :", print(x), conditionMessage(e), "\n"); beep()})
-  
-  
-  message("Loading: ",paste0(j, "/", length(s2)), paste0(" ..... ", round(j*100/length(s2), 0), "%", "\n"))
   j <- j + 1
+  loading(ldi, length(s2))
 }
-beep()
+
+j <- 1
+ldi <- 0
+
+for(x in s2)
+{
+  ldi <- ldi + 1
+  tryCatch(
+  {
+    selfarima2(data2, start.date = start, end.date = end, nr = x, result.save = TRUE, i = j, type = "xreg", xr = as.matrix(ds),
+               n = n, seas = FALSE, log = TRUE , typ = "xreg_ds_log", data.nas = data3)
+  }, error = function(e){cat("ERROR :", print(x), conditionMessage(e), "\n"); beep()})
+  j <- j + 1
+  loading(ldi, length(s2))
+}
+
+j <- 1
+ldi <- 0
+
+for(x in s2)
+{
+  ldi <- ldi + 1
+  tryCatch(
+  {
+    selfarima2(data2, start.date = start, end.date = end, nr = x, result.save = TRUE, i = j, type = "xreg", xr = as.matrix(dns),
+               n = n, seas = FALSE, log = TRUE , typ = "xreg_dns_log", data.nas = data3)
+  }, error = function(e){cat("ERROR :", print(x), conditionMessage(e), "\n"); beep()})
+  j <- j + 1
+  loading(ldi, length(s2))
+}
+
