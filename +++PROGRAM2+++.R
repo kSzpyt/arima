@@ -23,7 +23,7 @@ end <- "2019-11-03"
 j <- 1
 ldi <- 0
 
-for(x in s2)
+for(x in s2) 
 {
   ldi <- ldi + 1
   tryCatch(
