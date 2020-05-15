@@ -26,11 +26,11 @@ ldi <- 0
 for(x in s2) 
 {
   ldi <- ldi + 1
-  tryCatch(
-  {
+  #tryCatch(
+  #{
     selfarima2(data2, start.date = start, end.date = end, nr = x, result.save = TRUE, i = j, type = "simple",
                n = n, seas = FALSE, log = TRUE , typ = "simple_log", data.nas = data3)
-  }, error = function(e){cat("ERROR :", print(x), conditionMessage(e), "\n"); beep()})
+  #}, error = function(e){cat("ERROR :", print(x), conditionMessage(e), "\n"); beep()})
   j <- j + 1
   loading(ldi, length(s2))
 }

@@ -20,12 +20,12 @@ logistic.trend <- function(data, nr = 7, wind = NULL, n = 7, log = FALSE, log.re
   {
     ex <- na.action(dat2)
     wind2 <- wind[-ex]
-    coefs <- coef(lm(logit(dat2/max(dat2)) ~ wind2))
+    coefs <- coef(lm(car::logit(dat2/max(dat2)) ~ wind2))
   }
   else
   {
     wind2 <- wind
-    coefs <- coef(lm(logit(dat2/max(dat2)) ~ wind2))
+    coefs <- coef(lm(car::logit(dat2/max(dat2)) ~ wind2))
   }
   
   model <- nlsLM(dat ~ phi1/(1+exp(-(phi2+phi3*wind))), 
