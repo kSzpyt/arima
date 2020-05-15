@@ -70,12 +70,10 @@ for(x in s2)
 }
 
 ########################################################################################################################
-################################# MODELE WYKORZYSTUJĄCE ILOŚĆ WYPŁAT ###################################################
-########################################################################################################################
-#dla prostej arimy
-type <- "simple"
+#dla modelu z uwzględnienem tylko dni specjalnych oraz dni tygodnia
+type <- "xreg"
 xr <- dns
-nazwa <- ifelse(log == FALSE, "means_simple", "means_simple_log")
+nazwa <- ifelse(log == FALSE, "xreg_dns", "xreg_dns_log")
 
 j <- 1
 ldi <- 0
@@ -90,11 +88,14 @@ for(x in s2)
   j <- j + 1
   loading(ldi, length(s2))
 }
+
 ########################################################################################################################
-#dla modelu z uwzględnienem tylko dni specjalnych 
-type <- "xreg"
-xr <- ds
-nazwa <- ifelse(log == FALSE, "means_xreg_ds", "means_xreg_ds_log")
+################################# MODELE WYKORZYSTUJĄCE ILOŚĆ WYPŁAT ###################################################
+########################################################################################################################
+#dla prostej arimy
+type <- "simple"
+xr <- dns
+nazwa <- ifelse(log == FALSE, "means_simple", "means_simple_log")
 
 j <- 1
 ldi <- 0
@@ -103,8 +104,8 @@ for(x in s1)
   ldi <- ldi + 1
   tryCatch(
     {
-      a <- selfarima.means(data2, start.date = start, end.date = end, nr = x, type = type, n = n, seas = seas)
-      write.means(a, data2, typ = nazwa, i = j, data.nas = data3, nr = x)
+      selfarima2(data2, start.date = start, end.date = end, nr = x, result.save = TRUE, i = j, type = type, xr = as.matrix(xr),
+                 n = n, seas = seas, log = log , typ = nazwa, data.nas = data3)
     }, error = function(e){cat("ERROR :", print(x), conditionMessage(e), "\n"); beep()})
   j <- j + 1
   loading(ldi, length(s2))
